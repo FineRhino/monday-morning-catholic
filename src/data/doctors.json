@@ -125,7 +125,13 @@
   "title": "Doctor of Grace",
   "summary": "Confessions and City of God. Taught on grace, original sin, and the heart that is restless until it rests in God.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "src": "/printables/augustine-of-hippo.png",
+   "width": 1122,
+   "height": 1402,
+   "alt": "One-page printable on St. Augustine, Bishop of Hippo and Doctor of the Church (354–430), covering his life, major works, contributions to Catholic thought, key themes, and legacy. Includes the line: \"Our hearts are restless until they rest in You.\""
+  }
  },
  {
   "id": "cyril-of-alexandria",
