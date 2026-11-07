@@ -14,6 +14,13 @@ const doctors = defineCollection({
     summary: z.string(),
     woman: z.boolean().default(false),
     lay: z.boolean().default(false),
+    /** One-page printable stored in public/printables/; width and height are in pixels. */
+    printable: z.object({
+      src: z.string(),
+      width: z.number().int(),
+      height: z.number().int(),
+      alt: z.string(),
+    }).optional(),
   }),
 });
 

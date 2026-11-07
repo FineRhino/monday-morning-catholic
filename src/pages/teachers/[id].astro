@@ -22,6 +22,15 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
       <div><dt>Years between</dt><dd>{d.proclaimed - d.died}</dd></div>
     </dl>
     <p class="prose summary">{d.summary}</p>
+    {d.printable && (
+      <section class="printable">
+        <h2>Printable</h2>
+        <a href={d.printable.src}>
+          <img src={d.printable.src} width={d.printable.width} height={d.printable.height} alt={d.printable.alt} loading="lazy" />
+        </a>
+        <p><a href={d.printable.src} download>Download to print</a></p>
+      </section>
+    )}
     {related.length > 0 && (
       <section>
         <h2>Articles drawing on {d.name}</h2>
@@ -43,4 +52,7 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
   dd { margin: 0; font-family: var(--display); font-size: 30px; font-variant-numeric: tabular-nums; }
   .summary { font-size: 19px; }
   h2 { font-size: 22px; }
+  .printable { display: grid; gap: 10px; width: 100%; max-width: 560px; }
+  .printable img { display: block; border: 1px solid var(--rule); border-radius: 8px; }
+  .printable p { margin: 0; }
 </style>
