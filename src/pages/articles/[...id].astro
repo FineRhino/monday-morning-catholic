@@ -1,0 +1,52 @@
+---
+import { getCollection, getEntries, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { sectionById } from '../../data/sections';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', (a) => import.meta.env.DEV || !a.data.draft);
+  return articles.map((a) => ({ params: { id: a.id }, props: { article: a } }));
+}
+const { article } = Astro.props;
+const { Content } = await render(article);
+const doctors = await getEntries(article.data.doctors);
+const section = sectionById(article.data.section)!;
+---
+<Base title={article.data.title} description={article.data.description}>
+  <div class="gut"><div class="in page">
+    <article class="prose">
+      <a class="label" href={`/${section.id}/`}>{section.name}</a>
+      <h1>{article.data.title}</h1>
+      <p class="lede">{article.data.description}</p>
+      <div class="body"><Content /></div>
+    </article>
+    <aside>
+      {doctors.length > 0 && (
+        <div class="panel">
+          <h2>Teachers in this article</h2>
+          <ul>{doctors.map((d) => <li><a href={`/teachers/${d.id}/`}>{d.data.name}</a></li>)}</ul>
+        </div>
+      )}
+      {article.data.ccc.length > 0 && (
+        <div class="panel">
+          <h2>Catechism</h2>
+          <p class="muted">Paragraphs {article.data.ccc.join(', ')}</p>
+        </div>
+      )}
+    </aside>
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 40px; padding-block: 36px 56px; align-items: start; }
+  @media (max-width: 860px) { .page { grid-template-columns: minmax(0, 1fr); } }
+  article { display: grid; gap: 10px; }
+  article .label { text-decoration: none; }
+  h1 { font-size: clamp(34px, 5.4vw, 52px); line-height: 1.08; }
+  .lede { font-size: 20px; color: var(--muted); margin: 0; }
+  .body :global(h2) { font-size: 26px; margin-top: 28px; }
+  aside { display: grid; gap: 12px; position: sticky; top: 80px; }
+  aside h2 { font-size: 18px; }
+  aside ul { margin: 0; padding-left: 18px; }
+  aside p { margin: 0; }
+</style>

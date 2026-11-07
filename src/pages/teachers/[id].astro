@@ -1,0 +1,46 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { ERAS } from '../../data/eras';
+
+export async function getStaticPaths() {
+  return (await getCollection('doctors')).map((d) => ({ params: { id: d.id }, props: { doctor: d } }));
+}
+const { doctor } = Astro.props as { doctor: CollectionEntry<'doctors'> };
+const d = doctor.data;
+const era = ERAS.find((e) => e.id === d.era)!;
+const related = await getCollection('articles', (a) => (import.meta.env.DEV || !a.data.draft) && a.data.doctors.some((r) => r.id === doctor.id));
+---
+<Base title={d.name} description={d.summary}>
+  <div class="gut"><div class="in page" style={`--c: var(--${d.era})`}>
+    <a class="label" href="/teachers/">doctors of the church · {era.name.toLowerCase()}</a>
+    <h1>{d.name}</h1>
+    <p class="meta">{d.role}{d.title && <> · <b>{d.title}</b></>}</p>
+    <dl>
+      <div><dt>Died</dt><dd>{d.died}</dd></div>
+      <div><dt>Proclaimed a Doctor</dt><dd>{d.proclaimed}</dd></div>
+      <div><dt>Years between</dt><dd>{d.proclaimed - d.died}</dd></div>
+    </dl>
+    <p class="prose summary">{d.summary}</p>
+    {related.length > 0 && (
+      <section>
+        <h2>Articles drawing on {d.name}</h2>
+        <ul>{related.map((a) => <li><a href={`/articles/${a.id}/`}>{a.data.title}</a></li>)}</ul>
+      </section>
+    )}
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 14px; padding-block: 36px 56px; justify-items: start; }
+  .label { text-decoration: none; }
+  h1 { font-size: clamp(36px, 6vw, 56px); color: var(--c); }
+  .meta { margin: 0; color: var(--muted); }
+  .meta b { color: var(--gold); font-weight: 500; }
+  dl { display: flex; flex-wrap: wrap; gap: 0; margin: 8px 0; border-block: 1px solid var(--rule); }
+  dl div { padding: 12px 20px 12px 0; margin-right: 20px; }
+  dt { font-size: 14px; color: var(--muted); }
+  dd { margin: 0; font-family: var(--display); font-size: 30px; font-variant-numeric: tabular-nums; }
+  .summary { font-size: 19px; }
+  h2 { font-size: 22px; }
+</style>

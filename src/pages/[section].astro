@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SECTIONS, type Section } from '../data/sections';
+
+export function getStaticPaths() {
+  return SECTIONS.map((s) => ({ params: { section: s.id }, props: { section: s } }));
+}
+const { section } = Astro.props as { section: Section };
+const showDrafts = import.meta.env.DEV;
+const articles = (await getCollection('articles', (a) => a.data.section === section.id && (showDrafts || !a.data.draft)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const written = new Set(articles.map((a) => a.data.title));
+const planned = section.planned.filter((t) => !written.has(t));
+---
+<Base title={section.name} description={section.tagline}>
+  <div class="gut"><div class="in page">
+    <header>
+      <div class="label">section</div>
+      <h1>{section.name}</h1>
+      <p class="muted prose">{section.tagline}</p>
+    </header>
+    {articles.length > 0 && (
+      <ul class="cards">
+        {articles.map((a) => (
+          <li><a href={`/articles/${a.id}/`}>
+            <h2>{a.data.title}{a.data.draft && <span class="draft">draft</span>}</h2>
+            <p>{a.data.description}</p>
+          </a></li>
+        ))}
+      </ul>
+    )}
+    {planned.length > 0 && (
+      <section>
+        <h2 class="sub">Coming soon</h2>
+        <ul class="planned">{planned.map((t) => <li>{t}</li>)}</ul>
+      </section>
+    )}
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 28px; padding-block: 36px 56px; }
+  header { display: grid; gap: 8px; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .cards a { display: grid; gap: 6px; padding: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; text-decoration: none; height: 100%; }
+  .cards a:hover { border-color: var(--gold); }
+  .cards h2 { font-size: 22px; }
+  .cards p { margin: 0; color: var(--muted); }
+  .draft { font-family: var(--label); font-size: 13px; color: var(--gold); margin-left: 8px; letter-spacing: .06em; }
+  .sub { font-size: 22px; margin-bottom: 8px; }
+  .planned { margin: 0; padding-left: 20px; color: var(--muted); display: grid; gap: 4px; }
+</style>
