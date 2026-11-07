@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import DoctorsTimeline from '../../components/DoctorsTimeline.svelte';
+import { ERAS } from '../../data/eras';
+
+const doctors = (await getCollection('doctors')).map((d) => ({ id: d.id, ...d.data })).sort((a, b) => a.died - b.died);
+---
+<Base title="Teachers" description="The 38 Doctors of the Church and their main contributions to the faith.">
+  <div class="gut"><div class="in page">
+    <header>
+      <div class="label">teachers</div>
+      <h1>Doctors of the Church</h1>
+      <p class="muted prose">Saints whose writing or preaching the Church recognizes as a lasting guide for all believers. The title has been given to {doctors.length} saints.</p>
+    </header>
+    <DoctorsTimeline client:visible doctors={doctors} />
+    {ERAS.map((e) => {
+      const list = doctors.filter((d) => d.era === e.id);
+      return (
+        <section style={`--c: var(--${e.id})`}>
+          <div class="era-head"><h2>{e.name}</h2><span>{e.span} · {list.length} doctors</span></div>
+          <div class="grid">
+            {list.map((d) => (
+              <a class="card" href={`/teachers/${d.id}/`}>
+                <span class="yr">{d.died}</span>
+                <h3>{d.name}</h3>
+                <span class="meta">{d.role}{d.title && <b> · {d.title}</b>}</span>
+                <p>{d.summary}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      );
+    })}
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 36px; padding-block: 36px 56px; }
+  header { display: grid; gap: 8px; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  section { display: grid; gap: 14px; }
+  .era-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; border-bottom: 2px solid var(--c); padding-bottom: 8px; }
+  .era-head h2 { font-size: clamp(24px, 3.2vw, 30px); color: var(--c); }
+  .era-head span { font-family: var(--label); letter-spacing: .08em; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; text-decoration: none; }
+  .card:hover { border-color: var(--c); }
+  .yr { grid-row: span 3; font-family: var(--display); color: var(--c); font-variant-numeric: tabular-nums; padding-top: 3px; }
+  .card h3 { font-size: 20px; }
+  .meta { font-size: 14px; color: var(--muted); }
+  .meta b { color: var(--gold); font-weight: 500; }
+  .card p { margin: 4px 0 0; font-size: 15px; }
+</style>

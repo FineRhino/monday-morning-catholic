@@ -1,0 +1,59 @@
+---
+import '../styles/global.css';
+import { SECTIONS } from '../data/sections';
+
+interface Props { title?: string; description?: string; }
+const { title, description = 'Catholic theology and practice from a lay perspective.' } = Astro.props;
+const pageTitle = title ? `${title} · Monday Morning Catholic` : 'Monday Morning Catholic';
+const path = Astro.url.pathname;
+const nav = [
+  ...SECTIONS.filter((s) => s.id !== 'notes').map((s) => ({ href: `/${s.id}/`, label: s.name })),
+  { href: '/teachers/', label: 'Teachers' },
+  { href: '/notes/', label: 'Notes' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+Sans:wght@400;500;700&family=Alegreya+Sans+SC:wght@500;700&display=swap" />
+  </head>
+  <body>
+    <nav class="top gut">
+      <div class="in">
+        <a class="brand" href="/">
+          <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="11" y="2" width="4" height="22" rx="1" fill="var(--gold)" /><rect x="5" y="8" width="16" height="4" rx="1" fill="var(--gold)" /></svg>
+          Monday Morning Catholic
+        </a>
+        <div class="links">
+          {nav.map((n) => <a href={n.href} class:list={{ on: path.startsWith(n.href) }}>{n.label}</a>)}
+        </div>
+      </div>
+    </nav>
+    <main><slot /></main>
+    <footer class="gut">
+      <div class="in">
+        <p>A personal, lay perspective on the Catholic faith. Not an official Church site. <a href="/about/">About</a></p>
+        <p>Scripture quotations are from the Douay-Rheims Bible (public domain) unless noted.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  nav.top { position: sticky; top: 0; z-index: 5; background: var(--surface); border-bottom: 1px solid var(--rule); padding-top: env(safe-area-inset-top, 0px); }
+  nav.top .in { display: flex; align-items: center; gap: 20px; padding-block: 12px; flex-wrap: wrap; }
+  .brand { font-family: var(--display); font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 10px; margin-right: auto; text-decoration: none; }
+  .links { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 15px; }
+  .links a { color: var(--muted); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
+  .links a:hover, .links a.on { color: var(--ink); border-color: var(--gold); }
+  footer { padding-block: 20px 40px; font-size: 14px; color: var(--muted); }
+  footer .in { border-top: 1px solid var(--rule); padding-top: 12px; }
+  footer p { margin: 4px 0; }
+</style>
