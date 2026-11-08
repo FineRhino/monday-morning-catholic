@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { removePassage, savePassage, store } from '../lib/store.svelte';
+  import { isPassageSaved, removePassage, savePassage, store } from '../lib/store.svelte';
+  import { VERSES } from '../data/verses';
+  // Verse of the day: changes daily, and "Another" cycles through the list.
+  let vi = $state(Math.floor(Date.now() / 864e5) % VERSES.length);
+  const verse = $derived(VERSES[vi]);
+  const verseSaved = $derived(isPassageSaved(verse.ref));
   let ref = $state('');
   let note = $state('');
   function submit(e: SubmitEvent) {
@@ -13,6 +18,17 @@
 
 <div class="panel">
   <div class="ph"><h2>Saved passages</h2>{#if store.passages.length}<span class="count">{store.passages.length} saved</span>{/if}</div>
+  <figure class="votd">
+    <div class="label">verse of the day</div>
+    <blockquote>{verse.text}</blockquote>
+    <figcaption>
+      <span>{verse.ref}</span>
+      <button class="ghost" aria-pressed={verseSaved} onclick={() => (verseSaved ? removePassage(verse.ref) : savePassage(verse.ref, verse.text))}>
+        {verseSaved ? 'Saved' : 'Save'}
+      </button>
+      <button class="ghost" onclick={() => (vi = (vi + 1) % VERSES.length)}>Another</button>
+    </figcaption>
+  </figure>
   <form class="add" onsubmit={submit}>
     <input class="field" id="sp-ref" bind:value={ref} placeholder="Reference, e.g. John 14:27" aria-label="Scripture reference" maxlength="60" required />
     <button class="btn" type="submit">Save</button>
@@ -38,6 +54,10 @@
 </div>
 
 <style>
+  .votd { margin: 0; display: grid; gap: 6px; padding: 12px 14px; border-left: 3px solid var(--gold); border-radius: 0 6px 6px 0; background: var(--sunk); }
+  blockquote { margin: 0; font-family: var(--display); font-style: italic; font-size: 18px; line-height: 1.4; }
+  figcaption { font-size: 14px; color: var(--muted); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  figcaption span { margin-right: auto; }
   .add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
   .full { grid-column: 1 / -1; }
 </style>
