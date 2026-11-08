@@ -39,4 +39,21 @@ const articles = defineCollection({
   }),
 });
 
-export const collections = { doctors, articles };
+/** Daily Mass readings, written each morning by scripts/daily-readings.ts. Citations and a summary only. */
+const readings = defineCollection({
+  loader: glob({ pattern: '*.json', base: './src/data/readings' }),
+  schema: z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    title: z.string(),
+    url: z.string().startsWith('https://'),
+    readings: z.array(z.object({
+      label: z.string(),
+      citation: z.string(),
+      /** An optional alternative reading, often a shorter form. */
+      alt: z.string().optional(),
+    })).min(1),
+    summary: z.string().min(20).max(600),
+  }),
+});
+
+export const collections = { doctors, articles, readings };
