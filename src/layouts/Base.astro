@@ -8,6 +8,7 @@ const pageTitle = title ? `${title} · Monday Morning Catholic` : 'Monday Mornin
 const path = Astro.url.pathname;
 const nav = [
   ...SECTIONS.filter((s) => s.id !== 'notes').map((s) => ({ href: `/${s.id}/`, label: s.name })),
+  { href: '/prayers/', label: 'Prayers' },
   { href: '/teachers/', label: 'Teachers' },
   { href: '/notes/', label: 'Notes' },
 ];

@@ -9,11 +9,16 @@
   <div class="bar"><i style:width="{(count / RHYTHM.length) * 100}%"></i></div>
   <div class="steps">
     {#each RHYTHM as r (r.id)}
-      <button class="step" aria-pressed={isDone(r.id)} onclick={() => toggleStep(r.id)}>
-        <i class="tick"></i>
-        <span><b>{r.title}</b><small>{r.hint}</small></span>
-        <span class="when">{r.when}</span>
-      </button>
+      <div class="step">
+        <button class="toggle" aria-pressed={isDone(r.id)} onclick={() => toggleStep(r.id)}>
+          <i class="tick"></i>
+          <span><b>{r.title}</b><small>{r.hint}</small></span>
+        </button>
+        <span class="side">
+          <span class="when">{r.when}</span>
+          {#if r.prayer}<a class="pray" href={`/prayers/#${r.prayer}`} aria-label={`Pray ${r.title}`}>Pray</a>{/if}
+        </span>
+      </div>
     {/each}
   </div>
 </div>
@@ -22,12 +27,15 @@
   .bar { height: 6px; background: var(--sunk); border-radius: 99px; overflow: hidden; }
   .bar i { display: block; height: 100%; background: var(--gold); transition: width .4s ease; }
   .steps { display: grid; gap: 8px; }
-  .step { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 6px; background: var(--sunk); border: 1px solid transparent; text-align: left; width: 100%; }
+  .step { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 6px; background: var(--sunk); border: 1px solid transparent; }
   .step:hover { border-color: var(--rule); }
-  .step b { display: block; }
-  .step small { font-size: 14px; color: var(--muted); }
+  .toggle { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; padding: 0; background: none; border: 0; text-align: left; width: 100%; }
+  .toggle b { display: block; }
+  .toggle small { font-size: 14px; color: var(--muted); }
   .tick { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--gold); display: grid; place-items: center; transition: background .2s; }
-  .step[aria-pressed='true'] .tick { background: var(--gold); }
-  .step[aria-pressed='true'] .tick::after { content: ''; width: 6px; height: 11px; border: solid var(--surface); border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+  .toggle[aria-pressed='true'] .tick { background: var(--gold); }
+  .toggle[aria-pressed='true'] .tick::after { content: ''; width: 6px; height: 11px; border: solid var(--surface); border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+  .side { display: grid; justify-items: end; gap: 2px; }
   .when { font-family: var(--label); letter-spacing: .06em; color: var(--muted); font-size: 13px; }
+  .pray { font-size: 14px; color: var(--gold); font-weight: 700; }
 </style>

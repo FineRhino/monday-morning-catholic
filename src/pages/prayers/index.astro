@@ -1,0 +1,19 @@
+---
+import Base from '../../layouts/Base.astro';
+import PrayerIndex from '../../components/PrayerIndex.svelte';
+import { PRAYERS } from '../../data/prayers';
+---
+<Base title="Prayers" description="Traditional Catholic prayers, searchable, including the Angelus and the Morning Offering.">
+  <div class="gut"><div class="in page">
+    <div class="label">prayers</div>
+    <h1>Prayers</h1>
+    <p class="prose muted">Traditional prayers of the Church. Search by name or by words in the prayer, and save the ones you pray often. Saved prayers stay on this device.</p>
+    <PrayerIndex client:load prayers={PRAYERS} />
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 14px; padding-block: 36px 56px; justify-items: start; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  p { margin: 0; }
+</style>

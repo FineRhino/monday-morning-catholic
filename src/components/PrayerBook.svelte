@@ -27,11 +27,13 @@
     </button>
   </div>
   <p class="text">{prayer.text}</p>
+  <a class="all" href="/prayers/">All prayers, with search</a>
 </div>
 
 <style>
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
   h3 { font-size: 18px; }
+  .all { font-size: 14px; color: var(--gold); }
   .text { font-family: var(--display); font-size: 16.5px; line-height: 1.5; white-space: pre-line; background: var(--sunk); border-radius: 6px; padding: 12px 14px; margin: 0; max-height: 240px; overflow: auto; }
 </style>
