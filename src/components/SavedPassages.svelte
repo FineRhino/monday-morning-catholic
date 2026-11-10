@@ -16,6 +16,9 @@
   let error = $state('');
   let canSaveAnyway = $state(false);
   const foundSaved = $derived(found ? isPassageSaved(found.ref) : false);
+  // Saved passages whose full text is showing; the rest are cut to three lines.
+  let expanded = $state<string[]>([]);
+  const toggleExpanded = (id: string) => (expanded = expanded.includes(id) ? expanded.filter((x) => x !== id) : [...expanded, id]);
 
   function reset() {
     found = null;
@@ -110,7 +113,10 @@
       {#each store.passages as p (p.id)}
         <li>
           <span class="t">{p.ref}</span>
-          {#if p.note || p.text}<span class="s clamp">{p.note || p.text}</span>{/if}
+          {#if p.text}
+            <button class="s ptext" class:clamp={!expanded.includes(p.id)} aria-expanded={expanded.includes(p.id)} onclick={() => toggleExpanded(p.id)} title="Show or hide the full text">{p.text}</button>
+          {/if}
+          {#if p.note}<span class="s pnote">{p.note}</span>{/if}
           <span class="acts">
             <button class="ic" onclick={() => removePassage(p.ref)} aria-label="Remove {p.ref}">
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4l8 8M12 4l-8 8" /></svg>
@@ -135,5 +141,7 @@
   .add { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
   .msg { margin: 0; font-size: 14px; color: var(--era3); }
   .linkish { display: block; margin-top: 4px; padding: 0; background: none; border: 0; color: var(--gold); text-decoration: underline; font-size: 14px; }
+  .ptext { padding: 0; border: 0; background: none; text-align: left; font-family: var(--display); font-style: italic; font-size: 15px; color: var(--ink); }
+  .pnote { border-left: 2px solid var(--gold); padding-left: 8px; margin-top: 4px; }
   .clamp { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 </style>
