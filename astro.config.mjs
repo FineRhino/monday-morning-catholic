@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import svelte from '@astrojs/svelte';
 
 export default defineConfig({
-  // Set this to the real domain once it is registered.
+  // The live domain, used for canonical URLs.
   site: 'https://mondaymorningcatholic.com',
   integrations: [mdx(), svelte()],
 });

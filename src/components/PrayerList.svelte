@@ -39,7 +39,7 @@
       {/each}
     </ul>
   {:else}
-    <p class="empty">Add the people you are praying for. Names stay on this device only.</p>
+    <p class="empty">Add the people you are praying for. Names stay on this device, or in your account if you sign in.</p>
   {/if}
 </div>
 

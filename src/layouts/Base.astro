@@ -1,6 +1,9 @@
 ---
 import '../styles/global.css';
 import { SECTIONS } from '../data/sections';
+import AccountLink from '../components/AccountLink.svelte';
+import SyncNotice from '../components/SyncNotice.svelte';
+import { accountsEnabled } from '../lib/supabase';
 
 interface Props { title?: string; description?: string; }
 const { title, description = 'Catholic theology and practice from a lay perspective.' } = Astro.props;
@@ -34,10 +37,12 @@ const nav = [
         </a>
         <div class="links">
           {nav.map((n) => <a href={n.href} class:list={{ on: path.startsWith(n.href) }}>{n.label}</a>)}
+          {accountsEnabled && <AccountLink client:only="svelte" current={path.startsWith('/account/')} />}
         </div>
       </div>
     </nav>
     <main><slot /></main>
+    {accountsEnabled && <SyncNotice client:only="svelte" />}
     <footer class="gut">
       <div class="in">
         <p>A personal, lay perspective on the Catholic faith. Not an official Church site. <a href="/about/">About</a></p>
@@ -52,8 +57,9 @@ const nav = [
   nav.top .in { display: flex; align-items: center; gap: 20px; padding-block: 12px; flex-wrap: wrap; }
   .brand { font-family: var(--display); font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 10px; margin-right: auto; text-decoration: none; }
   .links { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 15px; }
-  .links a { color: var(--muted); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
-  .links a:hover, .links a.on { color: var(--ink); border-color: var(--gold); }
+  /* :global so the Sign in link, rendered by a Svelte island, matches the others. */
+  .links :global(a) { color: var(--muted); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
+  .links :global(a:hover), .links :global(a.on) { color: var(--ink); border-color: var(--gold); }
   footer { padding-block: 20px 40px; font-size: 14px; color: var(--muted); }
   footer .in { border-top: 1px solid var(--rule); padding-top: 12px; }
   footer p { margin: 4px 0; }

@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import AccountPanel from '../../components/AccountPanel.svelte';
+---
+<Base title="Account" description="Sign in to keep your prayer list, saved prayers, and passages on every device.">
+  <div class="gut"><div class="in page">
+    <div class="label">account</div>
+    <h1>Your account</h1>
+    <AccountPanel client:only="svelte" />
+
+    <section class="prose privacy" aria-labelledby="privacy">
+      <h2 id="privacy">What is stored, and who can see it</h2>
+      <p>You don't need an account to use this site. Without one, your prayer list, saved prayers, saved passages, and daily check-offs stay in your own browser.</p>
+      <p>If you sign in, the same things are stored in a database hosted by Supabase, so you can see them on any device. That includes the names and intentions on your prayer list and the notes you write on passages. Your email is used only to sign you in.</p>
+      <p>The site is built so only you can see your saved items. The site's owner runs the database and could technically access it, but does not read, sell, or share anyone's personal data.</p>
+      <p>You can download everything or delete your account at any time from this page. Deleting your account deletes everything saved in it.</p>
+    </section>
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 16px; padding-block: 36px 56px; justify-items: start; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  .privacy { display: grid; gap: 10px; margin-top: 16px; }
+  .privacy h2 { font-size: 22px; }
+  .privacy p { margin: 0; color: var(--muted); }
+</style>

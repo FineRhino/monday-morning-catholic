@@ -57,6 +57,33 @@ A misspelled Doctor id or a Catechism number outside 1–2865 fails the build.
 
 Any static host works. On Cloudflare Pages or Netlify, use build command `npm run build` and output directory `dist`. Set `site` in `astro.config.mjs` to the real domain.
 
+## Accounts (Supabase)
+
+Visitors can use the site without an account; their prayer list, saved prayers, passages, and daily rhythm stay in the browser. Signing in with an emailed code keeps the same data in [Supabase](https://supabase.com) so it follows them to any device. On first sign-in, anything saved in that browser is copied into the account.
+
+- `supabase/schema.sql` creates the tables, the row level security rules (each person sees only their own rows), and the function behind "Delete my account".
+- `src/lib/store.svelte.ts` keeps the data and writes changes to Supabase when someone is signed in.
+- `src/pages/account/` is the sign-in, sign-out, download, and delete page, plus the privacy note.
+
+Without the two `PUBLIC_SUPABASE_*` variables, accounts are switched off and the site works from browser storage alone.
+
+### Setting up Supabase
+
+1. Create a free project at [supabase.com](https://supabase.com). Pick a US East region.
+2. In **SQL Editor**, paste all of `supabase/schema.sql` and run it.
+3. In **Authentication > Emails**, edit the **Magic Link** and **Confirm signup** templates so they include the code, for example `<p>Your sign-in code: {{ .Token }}</p>`, alongside the existing link.
+4. In **Authentication > URL Configuration**, set **Site URL** to `https://mondaymorningcatholic.com`. Under **Redirect URLs**, add `https://mondaymorningcatholic.com/**` and `http://localhost:4321/**`.
+5. In **Project Settings > API Keys**, copy the project URL and the **publishable** key (never the secret key). Add them to `.env` for local development:
+
+   ```
+   PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+   PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+   ```
+
+6. Add the same two variables in Cloudflare: **Workers & Pages** > `monday-morning-catholic` > **Settings** > **Build** > **Variables and secrets**. They must be build variables, because Astro builds them into the page, so redeploy after any change.
+
+Sign-in emails go through [Resend](https://resend.com), sending from `mondaymorningcatholic.com`. In Supabase, **Authentication > Emails > SMTP Settings** uses host `smtp.resend.com`, port `465`, username `resend`, and a Resend API key as the password. Supabase's built-in sender is for testing only, and custom templates require a custom sender.
+
 ## Daily Mass readings
 
 `scripts/daily-readings.ts` adds the day's readings to the home page. It:
