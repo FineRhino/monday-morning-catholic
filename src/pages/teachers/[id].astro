@@ -1,8 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { Picture } from 'astro:assets';
-import { statSync } from 'node:fs';
-import path from 'node:path';
 import Base from '../../layouts/Base.astro';
 import { ERAS } from '../../data/eras';
 
@@ -12,8 +10,6 @@ export async function getStaticPaths() {
 const { doctor } = Astro.props as { doctor: CollectionEntry<'doctors'> };
 const d = doctor.data;
 const era = ERAS.find((e) => e.id === d.era)!;
-// Shown next to the download link so visitors know the size before downloading.
-const downloadKb = d.printable && Math.round(statSync(path.join(process.cwd(), 'public', d.printable.download)).size / 1024);
 const related = await getCollection('articles', (a) => (import.meta.env.DEV || !a.data.draft) && a.data.doctors.some((r) => r.id === doctor.id));
 ---
 <Base title={d.name} description={d.summary}>
@@ -33,7 +29,7 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
         <a href={d.printable.download}>
           <Picture src={d.printable.image} alt={d.printable.alt} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[400, 700, d.printable.image.width]} sizes="(max-width: 600px) calc(100vw - 32px), 560px" />
         </a>
-        <p><a href={d.printable.download} download>Download to print</a> <span class="muted">(JPEG, {downloadKb} KB)</span></p>
+        <p><a href={d.printable.download} download>Download to print</a> <span class="muted">(JPEG)</span></p>
       </section>
     )}
     {related.length > 0 && (
