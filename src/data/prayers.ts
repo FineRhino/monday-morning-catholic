@@ -22,7 +22,7 @@ export const PRAYERS: Prayer[] = [
 ];
 
 export const RHYTHM = [
-  { id: 'morning', title: 'Morning offering', hint: 'Give the day to God before email', when: 'Morning', prayer: 'offering' },
-  { id: 'noon', title: 'The Angelus', hint: 'A one-minute pause at midday', when: 'Noon', prayer: 'angelus' },
-  { id: 'evening', title: 'Examen', hint: 'Look back on the day with gratitude', when: 'Evening', prayer: undefined },
+  { id: 'morning', title: 'Morning offering', hint: 'Give the day to God before email', when: 'Morning', href: '/prayers/#offering', cta: 'Pray' },
+  { id: 'noon', title: 'The Angelus', hint: 'A one-minute pause at midday', when: 'Noon', href: '/prayers/#angelus', cta: 'Pray' },
+  { id: 'evening', title: 'Examen', hint: 'Look back on the day with gratitude', when: 'Evening', href: '/examen/', cta: 'Begin' },
 ] as const;

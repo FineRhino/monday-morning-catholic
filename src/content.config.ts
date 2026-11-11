@@ -4,7 +4,7 @@ import { z } from 'astro/zod';
 
 const doctors = defineCollection({
   loader: file('src/data/doctors.json'),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     name: z.string(),
     era: z.enum(['era1', 'era2', 'era3', 'era4']),
     died: z.number().int(),
@@ -14,11 +14,14 @@ const doctors = defineCollection({
     summary: z.string(),
     woman: z.boolean().default(false),
     lay: z.boolean().default(false),
-    /** One-page printable stored in public/printables/; width and height are in pixels. */
+    /**
+     * One-page printable. `image` is the original in src/assets/printables/ (path relative to
+     * doctors.json); Astro makes small web versions of it for the page. `download` is the
+     * print-quality file in public/printables/ that visitors download.
+     */
     printable: z.object({
-      src: z.string(),
-      width: z.number().int(),
-      height: z.number().int(),
+      image: image(),
+      download: z.string().startsWith('/printables/'),
       alt: z.string(),
     }).optional(),
   }),

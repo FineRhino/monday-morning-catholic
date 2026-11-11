@@ -1,5 +1,8 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { Picture } from 'astro:assets';
+import { statSync } from 'node:fs';
+import path from 'node:path';
 import Base from '../../layouts/Base.astro';
 import { ERAS } from '../../data/eras';
 
@@ -9,6 +12,8 @@ export async function getStaticPaths() {
 const { doctor } = Astro.props as { doctor: CollectionEntry<'doctors'> };
 const d = doctor.data;
 const era = ERAS.find((e) => e.id === d.era)!;
+// Shown next to the download link so visitors know the size before downloading.
+const downloadKb = d.printable && Math.round(statSync(path.join(process.cwd(), 'public', d.printable.download)).size / 1024);
 const related = await getCollection('articles', (a) => (import.meta.env.DEV || !a.data.draft) && a.data.doctors.some((r) => r.id === doctor.id));
 ---
 <Base title={d.name} description={d.summary}>
@@ -25,10 +30,10 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
     {d.printable && (
       <section class="printable">
         <h2>Printable</h2>
-        <a href={d.printable.src}>
-          <img src={d.printable.src} width={d.printable.width} height={d.printable.height} alt={d.printable.alt} loading="lazy" />
+        <a href={d.printable.download}>
+          <Picture src={d.printable.image} alt={d.printable.alt} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[400, 700, d.printable.image.width]} sizes="(max-width: 600px) calc(100vw - 32px), 560px" />
         </a>
-        <p><a href={d.printable.src} download>Download to print</a></p>
+        <p><a href={d.printable.download} download>Download to print</a> <span class="muted">(JPEG, {downloadKb} KB)</span></p>
       </section>
     )}
     {related.length > 0 && (
@@ -53,6 +58,6 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
   .summary { font-size: 19px; }
   h2 { font-size: 22px; }
   .printable { display: grid; gap: 10px; width: 100%; max-width: 560px; }
-  .printable img { display: block; border: 1px solid var(--rule); border-radius: 8px; }
+  .printable img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 8px; }
   .printable p { margin: 0; }
 </style>

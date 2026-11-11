@@ -16,6 +16,7 @@
     "@astrojs/svelte": "^9.1.2",
     "@supabase/supabase-js": "^2.119.0",
     "astro": "^7.4.7",
+    "sharp": "^0.35.5",
     "svelte": "^5.57.3",
     "typescript": "^6.0.3"
   },

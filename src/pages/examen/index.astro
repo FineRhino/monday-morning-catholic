@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import Examen from '../../components/Examen.svelte';
+---
+<Base title="The Daily Examen" description="A guided, step-by-step daily Examen: give thanks, review your day with God, ask for mercy, and prepare for tomorrow.">
+  <div class="gut"><div class="in page">
+    <a class="label" href="/">today · evening</a>
+    <h1>The Daily Examen</h1>
+    <Examen client:load />
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 16px; padding-block: 36px 56px; justify-items: start; }
+  .label { text-decoration: none; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+</style>

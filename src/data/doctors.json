@@ -127,9 +127,8 @@
   "woman": false,
   "lay": false,
   "printable": {
-   "src": "/printables/augustine-of-hippo.png",
-   "width": 1122,
-   "height": 1402,
+   "image": "../assets/printables/augustine-of-hippo.png",
+   "download": "/printables/augustine-of-hippo.jpg",
    "alt": "One-page printable on St. Augustine, Bishop of Hippo and Doctor of the Church (354–430), covering his life, major works, contributions to Catholic thought, key themes, and legacy. Includes the line: \"Our hearts are restless until they rest in You.\""
   }
  },

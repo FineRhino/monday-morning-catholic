@@ -48,6 +48,29 @@ import Scripture from '../../components/Scripture.svelte';
 
 A misspelled Doctor id or a Catechism number outside 1–2865 fails the build.
 
+## Adding a printable
+
+Each printable has two files: the original, which Astro turns into small web images for the page, and a print-quality JPEG that visitors download.
+
+1. Put the original in `src/assets/printables/`, for example `thomas-aquinas.png`.
+2. Make the print JPEG in `public/printables/`:
+
+   ```sh
+   node -e "require('sharp')('src/assets/printables/thomas-aquinas.png').flatten({background:'#fff'}).jpeg({quality:90,mozjpeg:true,chromaSubsampling:'4:4:4'}).toFile('public/printables/thomas-aquinas.jpg').then(i=>console.log(Math.round(i.size/1024)+' KB'))"
+   ```
+
+3. Add it to that Doctor in `src/data/doctors.json`:
+
+   ```json
+   "printable": {
+     "image": "../assets/printables/thomas-aquinas.png",
+     "download": "/printables/thomas-aquinas.jpg",
+     "alt": "One-page printable on St. Thomas Aquinas, covering ..."
+   }
+   ```
+
+For sharp prints, originals should be about 2550 × 3300 pixels (letter size at 300 DPI). A PDF also works as the download.
+
 ## Content and licensing
 
 - The Catechism and most modern Bible translations (NABRE, RSV-2CE) are copyrighted. Link to them or quote briefly.

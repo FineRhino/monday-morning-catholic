@@ -16,7 +16,7 @@
         </button>
         <span class="side">
           <span class="when">{r.when}</span>
-          {#if r.prayer}<a class="pray" href={`/prayers/#${r.prayer}`} aria-label={`Pray ${r.title}`}>Pray</a>{/if}
+          <a class="pray" href={r.href} aria-label={`${r.cta}: ${r.title}`}>{r.cta}</a>
         </span>
       </div>
     {/each}
