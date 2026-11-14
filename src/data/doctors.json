@@ -58,7 +58,49 @@
   "title": "Athanasius of the West",
   "summary": "On the Trinity defended Christ's full divinity against Arianism in the Latin West.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/hilary-of-poitiers.png",
+   "download": "/printables/hilary-of-poitiers.jpg",
+   "alt": "One-page printable on St. Hilary of Poitiers (c. 315–c. 367), bishop, theologian, and Doctor of the Church, champion of the divinity of Christ, covering his early life, his exile as bishop, his teaching and works, key contributions, and legacy. Includes the line: \"The Son is truly God, from the true God, Light from Light.\""
+  },
+  "resources": [
+   {
+    "title": "On the Trinity",
+    "url": "https://www.newadvent.org/fathers/3302.htm",
+    "source": "New Advent",
+    "note": "His major defense of Christ's full divinity, to read online, book by book."
+   },
+   {
+    "title": "On the Councils",
+    "url": "https://www.newadvent.org/fathers/3301.htm",
+    "source": "New Advent",
+    "note": "Also called On the Synods: his defense of the Nicene faith."
+   },
+   {
+    "title": "Homilies on the Psalms",
+    "url": "https://www.newadvent.org/fathers/3303.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Hilary of Poitiers and John of Damascus",
+    "url": "https://ccel.org/ccel/schaff/npnf209",
+    "source": "Christian Classics Ethereal Library",
+    "note": "Nicene and Post-Nicene Fathers, Series 2, Vol. 9: his main works in one volume."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Hilary",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20071010.html",
+    "source": "Vatican",
+    "note": "A general audience on his life and his teaching on the Trinity."
+   },
+   {
+    "title": "St. Hilary of Poitiers",
+    "url": "https://www.newadvent.org/cathen/07349b.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "athanasius",
