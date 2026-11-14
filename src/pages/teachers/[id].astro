@@ -23,14 +23,33 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
       <div><dt>Years between</dt><dd>{d.proclaimed - d.died}</dd></div>
     </dl>
     <p class="prose summary">{d.summary}</p>
-    {d.printable && (
-      <section class="printable">
-        <h2>Printable</h2>
-        <a href={d.printable.download}>
-          <Picture src={d.printable.image} alt={d.printable.alt} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[400, 700, d.printable.image.width]} sizes="(max-width: 600px) calc(100vw - 32px), 560px" />
-        </a>
-        <p><a href={d.printable.download} download>Download to print</a> <span class="muted">(JPEG)</span></p>
-      </section>
+    {(d.printable || d.resources.length > 0) && (
+      <div class="extras">
+        {d.printable && (
+          <section class="printable">
+            <h2>Printable</h2>
+            <a href={d.printable.download}>
+              <Picture src={d.printable.image} alt={d.printable.alt} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[400, 700, d.printable.image.width]} sizes="(max-width: 600px) calc(100vw - 32px), 560px" />
+            </a>
+            <p><a href={d.printable.download} download>Download to print</a> <span class="muted">(JPEG)</span></p>
+          </section>
+        )}
+        {d.resources.length > 0 && (
+          <section class="resources panel">
+            <h2>Resources</h2>
+            <p class="muted">{d.woman ? "Her" : "His"} writings and further reading online.</p>
+            <ul>
+              {d.resources.map((r) => (
+                <li>
+                  <a href={r.url} rel="noopener">{r.title}</a>
+                  <span class="src">{r.source}</span>
+                  {r.note && <span class="note">{r.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
     )}
     {related.length > 0 && (
       <section>
@@ -53,7 +72,16 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
   dd { margin: 0; font-family: var(--display); font-size: 30px; font-variant-numeric: tabular-nums; }
   .summary { font-size: 19px; }
   h2 { font-size: 22px; }
-  .printable { display: grid; gap: 10px; width: 100%; max-width: 560px; }
+  .extras { display: grid; grid-template-columns: minmax(0, 560px) minmax(240px, 360px); gap: 24px; align-items: start; width: 100%; }
+  @media (max-width: 860px) { .extras { grid-template-columns: minmax(0, 560px); } }
+  .printable { display: grid; gap: 10px; width: 100%; }
   .printable img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 8px; }
   .printable p { margin: 0; }
+  .resources { position: sticky; top: 80px; }
+  .resources > p { margin: -6px 0 0; font-size: 15px; }
+  .resources ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  .resources li { display: grid; gap: 1px; }
+  .resources a { font-weight: 700; }
+  .resources .src { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); }
+  .resources .note { font-size: 14.5px; color: var(--muted); }
 </style>

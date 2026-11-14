@@ -130,7 +130,38 @@
    "image": "../assets/printables/augustine-of-hippo.png",
    "download": "/printables/augustine-of-hippo.jpg",
    "alt": "One-page printable on St. Augustine, Bishop of Hippo and Doctor of the Church (354–430), covering his life, major works, contributions to Catholic thought, key themes, and legacy. Includes the line: \"Our hearts are restless until they rest in You.\""
-  }
+  },
+  "resources": [
+   {
+    "title": "Works of St. Augustine",
+    "url": "https://www.gutenberg.org/ebooks/author/1156",
+    "source": "Project Gutenberg",
+    "note": "Free e-books, including the Confessions and The City of God."
+   },
+   {
+    "title": "Confessions",
+    "url": "https://www.newadvent.org/fathers/1101.htm",
+    "source": "New Advent",
+    "note": "Read online, book by book."
+   },
+   {
+    "title": "The City of God",
+    "url": "https://www.newadvent.org/fathers/1201.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Works of St. Augustine",
+    "url": "https://ccel.org/ccel/augustine",
+    "source": "Christian Classics Ethereal Library",
+    "note": "Also includes the Enchiridion and On Christian Doctrine."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Augustine",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2008/documents/hf_ben-xvi_aud_20080109.html",
+    "source": "Vatican",
+    "note": "The first of five general audiences on his life and thought."
+   }
+  ]
  },
  {
   "id": "cyril-of-alexandria",
@@ -286,7 +317,27 @@
    "image": "../assets/printables/anthony-of-padua.png",
    "download": "/printables/anthony-of-padua.jpg",
    "alt": "One-page printable on St. Anthony of Padua (1195–1231), preacher, miracle-worker, and friend of the poor, covering his early life, preaching, mission, famous miracles, key virtues, and lasting legacy. Includes the line: \"Let your words teach and your actions speak for the Gospel.\""
-  }
+  },
+  "resources": [
+   {
+    "title": "St. Anthony of Padua",
+    "url": "https://www.franciscan-archive.org/antonius/",
+    "source": "The Franciscan Archive",
+    "note": "An overview of his works, with pointers to the Latin texts and the published English translation of his Sermons."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Anthony",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2010/documents/hf_ben-xvi_aud_20100210.html",
+    "source": "Vatican",
+    "note": "A general audience on his preaching and his Sermons."
+   },
+   {
+    "title": "St. Anthony of Padua",
+    "url": "https://www.newadvent.org/cathen/01556a.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life, with notes on his writings."
+   }
+  ]
  },
  {
   "id": "bonaventure",

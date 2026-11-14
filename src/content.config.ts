@@ -24,6 +24,14 @@ const doctors = defineCollection({
       download: z.string().startsWith('/printables/'),
       alt: z.string(),
     }).optional(),
+    /** Online sources for this Doctor's writings, shown next to the printable. */
+    resources: z.array(z.object({
+      title: z.string(),
+      url: z.url({ protocol: /^https$/ }),
+      /** The site it's on, such as "Project Gutenberg". */
+      source: z.string(),
+      note: z.string().optional(),
+    })).default([]),
   }),
 });
 
