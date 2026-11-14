@@ -54,6 +54,18 @@ const nav = [
   </body>
 </html>
 
+<script>
+  // Links to other websites open in a new tab; links within this site open in the same tab.
+  // Set at click time so it also covers article text and Svelte islands rendered later.
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+    if (!a || a.target || a.hasAttribute('download')) return;
+    if (!/^https?:$/.test(a.protocol) || a.origin === location.origin) return;
+    a.target = '_blank';
+    a.rel = `${a.rel} noopener`.trim();
+  });
+</script>
+
 <style>
   nav.top { position: sticky; top: 0; z-index: 5; background: var(--surface); border-bottom: 1px solid var(--rule); padding-top: env(safe-area-inset-top, 0px); }
   nav.top .in { display: flex; align-items: center; gap: 20px; padding-block: 12px; flex-wrap: wrap; }
