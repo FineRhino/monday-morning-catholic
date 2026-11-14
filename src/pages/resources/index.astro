@@ -1,0 +1,87 @@
+---
+/**
+ * Resources: collapsible sections of downloadable material.
+ * Printables come from doctors.json: any Doctor with a `printable` shows up here automatically.
+ */
+import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+
+const printables = (await getCollection('doctors', (d) => !!d.data.printable))
+  .sort((a, b) => a.data.died - b.data.died)
+  .map((d) => ({ id: d.id, name: d.data.name, ...d.data.printable! }));
+---
+<Base title="Resources" description="Printables and other resources for prayer and study.">
+  <div class="gut"><div class="in page">
+    <header>
+      <div class="label">resources</div>
+      <h1>Resources</h1>
+      <p class="muted prose">Printables and other material for prayer and study. Open a section to see what's in it.</p>
+    </header>
+
+    <details class="group" open>
+      <summary><h2>Printables</h2><span class="count">{printables.length}</span></summary>
+      <ul class="thumbs">
+        {printables.map((p) => (
+          <li>
+            <a class="thumb" href={p.download} data-open={`print-${p.id}`}>
+              <Picture src={p.image} alt="" formats={['avif', 'webp']} fallbackFormat="jpg" widths={[180, 360]} sizes="180px" />
+              <span>{p.name}</span>
+            </a>
+            <dialog id={`print-${p.id}`} aria-label={`${p.name} printable`}>
+              <div class="viewer">
+                <div class="bar">
+                  <h3>{p.name}</h3>
+                  <a class="btn" href={p.download} download>Download to print</a>
+                  <form method="dialog"><button class="ghost" aria-label="Close">Close</button></form>
+                </div>
+                <Picture src={p.image} alt={p.alt} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[700, p.image.width]} sizes="min(92vw, 900px)" loading="lazy" />
+                <p class="muted"><a href={`/teachers/${p.id}/`}>More about {p.name}</a></p>
+              </div>
+            </dialog>
+          </li>
+        ))}
+      </ul>
+    </details>
+  </div></div>
+</Base>
+
+<script>
+  // Clicking a thumbnail opens its larger view. Without JavaScript, the link opens the image file instead.
+  document.querySelectorAll<HTMLAnchorElement>('a[data-open]').forEach((a) => {
+    const dialog = document.getElementById(a.dataset.open!) as HTMLDialogElement | null;
+    if (!dialog) return;
+    a.addEventListener('click', (e) => { e.preventDefault(); dialog.showModal(); });
+    // Close when the backdrop (outside the viewer) is clicked.
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+  });
+</script>
+
+<style>
+  .page { display: grid; gap: 20px; padding-block: 36px 56px; }
+  header { display: grid; gap: 8px; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+
+  .group { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+  summary { display: flex; align-items: baseline; gap: 10px; padding: 16px 18px; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: '›'; color: var(--gold); font-weight: 700; font-size: 22px; line-height: 1; transition: transform .15s; }
+  .group[open] summary::before { transform: rotate(90deg); }
+  summary h2 { font-size: 24px; }
+  summary .count { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .thumbs { list-style: none; margin: 0; padding: 0 18px 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+  .thumb { display: grid; gap: 6px; text-decoration: none; font-size: 15px; }
+  .thumb :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1122 / 1402; object-fit: cover; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); transition: transform .15s, border-color .15s; }
+  .thumb:hover :global(img) { transform: translateY(-2px); border-color: var(--gold); }
+
+  dialog { padding: 0; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); color: var(--ink); width: min(92vw, 900px); max-height: 92vh; }
+  dialog::backdrop { background: rgb(0 0 0 / .6); }
+  .viewer { display: grid; gap: 12px; padding: 16px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; position: sticky; top: -16px; margin: -16px -16px 0; padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--rule); z-index: 1; }
+  .bar h3 { font-size: 20px; margin-right: auto; }
+  .bar form { margin: 0; }
+  .bar .btn { text-decoration: none; }
+  .viewer :global(img) { display: block; width: 100%; height: auto; border-radius: 6px; }
+  .viewer p { margin: 0; }
+</style>
