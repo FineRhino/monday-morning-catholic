@@ -6,6 +6,7 @@
 import { getCollection } from 'astro:content';
 import { Picture } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import { WEBSITES } from '../../data/websites';
 
 const printables = (await getCollection('doctors', (d) => !!d.data.printable))
   .sort((a, b) => a.data.died - b.data.died)
@@ -43,6 +44,19 @@ const printables = (await getCollection('doctors', (d) => !!d.data.printable))
         ))}
       </ul>
     </details>
+
+    <details class="group" open>
+      <summary><h2>Web Sites</h2><span class="count">{WEBSITES.length}</span></summary>
+      <ul class="sites">
+        {WEBSITES.map((w) => (
+          <li>
+            <a href={w.url} rel="noopener">{w.name}</a>
+            <span class="host">{new URL(w.url).hostname.replace(/^www\./, '')}</span>
+            <p>{w.description}</p>
+          </li>
+        ))}
+      </ul>
+    </details>
   </div></div>
 </Base>
 
@@ -74,6 +88,12 @@ const printables = (await getCollection('doctors', (d) => !!d.data.printable))
   .thumb { display: grid; gap: 6px; text-decoration: none; font-size: 15px; }
   .thumb :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: contain; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); transition: transform .15s, border-color .15s; }
   .thumb:hover :global(img) { transform: translateY(-2px); border-color: var(--gold); }
+
+  .sites { list-style: none; margin: 0; padding: 0 18px 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .sites li { display: grid; gap: 2px; align-content: start; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); }
+  .sites a { font-weight: 700; font-size: 17px; }
+  .sites .host { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); }
+  .sites p { margin: 4px 0 0; font-size: 15px; color: var(--muted); }
 
   dialog { padding: 0; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); color: var(--ink); width: min(92vw, 900px); max-height: 92vh; }
   dialog::backdrop { background: rgb(0 0 0 / .6); }
