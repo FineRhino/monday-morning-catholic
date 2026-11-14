@@ -4,7 +4,10 @@ export interface Section {
   id: SectionId;
   name: string;
   tagline: string;
-  /** Planned topics, taken from the book outline. Shown until articles exist. */
+  /**
+   * Planned topics, shown publicly until articles exist. The book outline for Believe,
+   * Explain, and Live is private and lives in book.ts instead.
+   */
   planned: string[];
 }
 
@@ -13,43 +16,19 @@ export const SECTIONS: Section[] = [
     id: 'believe',
     name: 'Believe',
     tagline: 'Faith and reason, God, Christ, and the Church, for a skeptical age.',
-    planned: [
-      'The Air We Breathe',
-      'Is Anybody There?',
-      "Faith and Reason Aren't Enemies",
-      'Who Do You Say That I Am?',
-      'Why Trust the Church?',
-      'When God Is Silent',
-      'Choosing to Believe',
-    ],
+    planned: [],
   },
   {
     id: 'explain',
     name: 'Explain',
     tagline: 'The Creed in plain English, common questions, and the hard teachings.',
-    planned: [
-      'Why Bother Explaining?',
-      'My Story First',
-      'The Creed in Plain English',
-      'Why Catholic, Not Just Christian?',
-      "The Questions You'll Actually Get",
-      'The Hard Teachings',
-      'Conversations, Not Arguments',
-    ],
+    planned: [],
   },
   {
     id: 'live',
     name: 'Live',
     tagline: 'Practical guides for work, stress, difficult people, and getting back up.',
-    planned: [
-      "The Faith Doesn't Stay in the Pew",
-      'Prayer in the Gaps',
-      'Work as a Path to Holiness',
-      'Peace in the Chaos',
-      'Integrity Under Pressure',
-      'Loving Difficult People',
-      'Falling and Getting Up',
-    ],
+    planned: [],
   },
   {
     id: 'practices',

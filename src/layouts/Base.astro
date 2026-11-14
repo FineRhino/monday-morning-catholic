@@ -5,8 +5,8 @@ import AccountLink from '../components/AccountLink.svelte';
 import SyncNotice from '../components/SyncNotice.svelte';
 import { accountsEnabled } from '../lib/supabase';
 
-interface Props { title?: string; description?: string; }
-const { title, description = 'Catholic theology and practice from a lay perspective.' } = Astro.props;
+interface Props { title?: string; description?: string; /** Keep search engines out (private pages). */ noindex?: boolean; }
+const { title, description = 'Catholic theology and practice from a lay perspective.', noindex = false } = Astro.props;
 const pageTitle = title ? `${title} · Monday Morning Catholic` : 'Monday Morning Catholic';
 const path = Astro.url.pathname;
 const nav = [
@@ -23,6 +23,7 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

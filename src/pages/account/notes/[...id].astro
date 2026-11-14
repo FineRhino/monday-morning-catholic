@@ -1,0 +1,28 @@
+---
+/**
+ * A private draft from the book notes, built even when `draft: true`.
+ * Cloudflare Access restricts /account/notes/* to the site owner. See the README.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import Article from '../../../components/Article.astro';
+import { BOOK_SECTIONS } from '../../../data/book';
+import { sectionById } from '../../../data/sections';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles', (a) => BOOK_SECTIONS.has(a.data.section));
+  return articles.map((a) => ({ params: { id: a.id }, props: { article: a } }));
+}
+const { article } = Astro.props;
+const section = sectionById(article.data.section)!;
+---
+<Base title={article.data.title} description={article.data.description} noindex>
+  <Article article={article} backHref="/account/notes/" backLabel={`book notes · ${section.name}`}>
+    <div class="panel" slot="aside">
+      <h2>{article.data.draft ? 'Draft' : 'Published'}</h2>
+      {article.data.draft
+        ? <p class="muted">Only you can see this. Set <code>draft: false</code> to publish it in {section.name}.</p>
+        : <p class="muted"><a href={`/articles/${article.id}/`}>View the public page</a></p>}
+    </div>
+  </Article>
+</Base>

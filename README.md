@@ -13,7 +13,7 @@ npm run build    # type-checks, then builds to dist/
 npm run preview
 ```
 
-Drafts (`draft: true`) appear in `npm run dev` but are left out of production builds.
+Drafts (`draft: true`) appear in `npm run dev` but are left out of the public pages in production builds. Believe, Explain, and Live drafts also appear in the private [book notes](#book-notes-private).
 
 ## How it's organized
 
@@ -21,7 +21,8 @@ Drafts (`draft: true`) appear in `npm run dev` but are left out of production bu
 | --- | --- |
 | `src/content/articles/` | Articles as MDX. The frontmatter sets the section, related Doctors, and Catechism paragraphs. |
 | `src/data/doctors.json` | The 38 Doctors of the Church, loaded as a typed content collection. |
-| `src/data/sections.ts` | Site sections (Believe, Explain, Live, Practices, Notes) and the planned topics taken from the book outline. |
+| `src/data/sections.ts` | Site sections (Believe, Explain, Live, Practices, Notes) and any planned topics shown publicly. |
+| `src/data/book.ts` | The book outline for Believe, Explain, and Live. Used only by the private book notes. |
 | `src/data/prayers.ts`, `verses.ts` | Prayer texts and verses of the day (Douay-Rheims, public domain). |
 | `src/lib/store.svelte.ts` | Local-first personal data (prayer list, saved prayers and passages, daily rhythm) kept in `localStorage`. |
 | `src/components/` | Interactive Svelte islands: dashboard widgets, the Doctors timeline, and `<Scripture>` for saveable verses in articles. |
@@ -47,6 +48,20 @@ import Scripture from '../../components/Scripture.svelte';
 ```
 
 A misspelled Doctor id or a Catechism number outside 1–2865 fails the build.
+
+## Book notes (private)
+
+`/account/notes/` shows the book outline from `src/data/book.ts`, with every Believe, Explain, and Live article listed under its part, including drafts. Each one opens at `/account/notes/<id>/`. To start a chapter, write an article with the chapter's exact title from the outline and `draft: true`. Set `draft: false` when it's ready, and it also appears in the public section. The public Believe, Explain, and Live pages show "Coming soon" until they have a published article.
+
+These pages are ordinary static HTML. Cloudflare Access keeps them private, not the site code:
+
+1. In the Cloudflare dashboard, go to **Zero Trust** → **Access** → **Applications** → **Add an application** → **Self-hosted**. The free plan covers up to 50 users.
+2. Add the destination `mondaymorningcatholic.com` with path `account/notes*`. Add `www.mondaymorningcatholic.com` too, if it serves the site.
+3. Add a policy with action **Allow** and include rule **Emails** set to your address. Under **Authentication**, use **One-time PIN**.
+4. In the Worker's **Settings** → **Domains & Routes**, turn off the `workers.dev` URL and preview URLs. Those addresses skip the Access rule.
+5. Open `/account/notes/` in a private window. You should get Cloudflare's sign-in page, not the notes.
+
+The article files are in this repository, so the notes are private only while the GitHub repository is private too.
 
 ## Adding a printable
 

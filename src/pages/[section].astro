@@ -17,7 +17,7 @@ const planned = section.planned.filter((t) => !written.has(t));
   <div class="gut"><div class="in page">
     <header>
       <div class="label">section</div>
-      <h1>{section.name}</h1>
+      <h1>{section.name}{articles.length === 0 && <span class="soon">Coming soon</span>}</h1>
       <p class="muted prose">{section.tagline}</p>
     </header>
     {articles.length > 0 && (
@@ -29,6 +29,9 @@ const planned = section.planned.filter((t) => !written.has(t));
           </a></li>
         ))}
       </ul>
+    )}
+    {articles.length === 0 && planned.length === 0 && (
+      <p class="muted prose">Articles for this section are on the way. Check back soon.</p>
     )}
     {planned.length > 0 && (
       <section>
@@ -42,7 +45,8 @@ const planned = section.planned.filter((t) => !written.has(t));
 <style>
   .page { display: grid; gap: 28px; padding-block: 36px 56px; }
   header { display: grid; gap: 8px; }
-  h1 { font-size: clamp(36px, 6vw, 56px); }
+  h1 { font-size: clamp(36px, 6vw, 56px); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+  .soon { font-family: var(--label); font-size: 15px; font-weight: 700; letter-spacing: .06em; color: var(--gold); background: var(--gold-soft); border: 1px solid var(--gold); border-radius: 999px; padding: 2px 10px; }
   .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
   .cards a { display: grid; gap: 6px; padding: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; text-decoration: none; height: 100%; }
   .cards a:hover { border-color: var(--gold); }

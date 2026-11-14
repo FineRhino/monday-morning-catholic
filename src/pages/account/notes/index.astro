@@ -1,0 +1,76 @@
+---
+/**
+ * Private book notes: the Believe, Explain, and Live outline with every draft.
+ * Cloudflare Access restricts /account/notes/* to the site owner. This page is static HTML,
+ * so it is private only because of that Access rule. See the README.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { BOOK_PARTS, BOOK_SECTIONS } from '../../../data/book';
+import { sectionById } from '../../../data/sections';
+
+const articles = (await getCollection('articles', (a) => BOOK_SECTIONS.has(a.data.section)))
+  .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+
+const parts = BOOK_PARTS.map((part) => {
+  const inPart = articles.filter((a) => a.data.section === part.section);
+  const byTitle = new Map(inPart.map((a) => [a.data.title, a]));
+  return {
+    section: sectionById(part.section)!,
+    chapters: part.chapters.map((title) => ({ title, article: byTitle.get(title) })),
+    /** Notes in this part that aren't chapters in the outline. */
+    extras: inPart.filter((a) => !part.chapters.includes(a.data.title)),
+  };
+});
+---
+<Base title="Book notes" description="Private notes and drafts for the book." noindex>
+  <div class="gut"><div class="in page">
+    <header>
+      <a class="label" href="/account/">account</a>
+      <h1>Book notes</h1>
+      <p class="muted prose">The outline for Believe, Explain, and Live, with every draft. Only you can open these pages.</p>
+    </header>
+
+    {parts.map(({ section, chapters, extras }) => (
+      <section class="part" aria-labelledby={`part-${section.id}`}>
+        <h2 id={`part-${section.id}`}>{section.name}</h2>
+        <p class="muted">{section.tagline}</p>
+        <ol class="chapters">
+          {chapters.map(({ title, article }) => (
+            <li>
+              {article
+                ? <a href={`/account/notes/${article.id}/`}>{title}</a>
+                : <span class="todo">{title}</span>}
+              <span class="status">{article ? (article.data.draft ? 'draft' : 'published') : 'not started'}</span>
+            </li>
+          ))}
+        </ol>
+        {extras.length > 0 && (
+          <>
+            <h3>Other notes</h3>
+            <ul class="chapters">
+              {extras.map((a) => (
+                <li><a href={`/account/notes/${a.id}/`}>{a.data.title}</a><span class="status">{a.data.draft ? 'draft' : 'published'}</span></li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+    ))}
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 28px; padding-block: 36px 56px; }
+  header { display: grid; gap: 8px; }
+  header .label { text-decoration: none; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  .part { display: grid; gap: 8px; padding: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; }
+  .part h2 { font-size: 26px; }
+  .part h3 { font-size: 18px; margin-top: 8px; }
+  .part > p { margin: 0; }
+  .chapters { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+  .chapters li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  .todo { color: var(--muted); }
+  .status { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); }
+</style>

@@ -11,6 +11,8 @@ import { SECTIONS } from '../data/sections';
 import { ERAS } from '../data/eras';
 
 const doctors = (await getCollection('doctors')).map((d) => ({ id: d.id, ...d.data })).sort((a, b) => a.died - b.died);
+/** Sections with at least one published article; the rest are tagged "coming soon". */
+const liveSections = new Set((await getCollection('articles', (a) => !a.data.draft)).map((a) => a.data.section));
 ---
 <Base>
   <section class="today gut">
@@ -39,7 +41,7 @@ const doctors = (await getCollection('doctors')).map((d) => ({ id: d.id, ...d.da
       <div><div class="label">explore</div><h2>Theology and practice</h2></div>
       <div class="sec-grid">
         {SECTIONS.map((s) => (
-          <a class="sec" href={`/${s.id}/`}><h3>{s.name}</h3><p>{s.tagline}</p></a>
+          <a class="sec" href={`/${s.id}/`}><h3>{s.name}{!liveSections.has(s.id) && <span class="soon">coming soon</span>}</h3><p>{s.tagline}</p></a>
         ))}
         <a class="sec" href="/teachers/"><h3>Teachers</h3><p>The Doctors of the Church and great theologians, with key ideas.</p></a>
       </div>
@@ -74,7 +76,8 @@ const doctors = (await getCollection('doctors')).map((d) => ({ id: d.id, ...d.da
   .sec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   a.sec { display: grid; gap: 4px; text-decoration: none; padding: 16px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); transition: transform .15s, border-color .15s; }
   a.sec:hover { transform: translateY(-2px); border-color: var(--gold); }
-  a.sec h3 { font-size: 20px; }
+  a.sec h3 { font-size: 20px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  a.sec .soon { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); }
   a.sec p { margin: 0; font-size: 15px; color: var(--muted); }
   .tl { padding-block: 36px 56px; }
   .tl p { margin: 6px 0 0; max-width: 66ch; }
