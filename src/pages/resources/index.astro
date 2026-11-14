@@ -72,7 +72,7 @@ const printables = (await getCollection('doctors', (d) => !!d.data.printable))
 
   .thumbs { list-style: none; margin: 0; padding: 0 18px 18px; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
   .thumb { display: grid; gap: 6px; text-decoration: none; font-size: 15px; }
-  .thumb :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 1122 / 1402; object-fit: cover; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); transition: transform .15s, border-color .15s; }
+  .thumb :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: contain; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg); transition: transform .15s, border-color .15s; }
   .thumb:hover :global(img) { transform: translateY(-2px); border-color: var(--gold); }
 
   dialog { padding: 0; border: 1px solid var(--rule); border-radius: 10px; background: var(--surface); color: var(--ink); width: min(92vw, 900px); max-height: 92vh; }

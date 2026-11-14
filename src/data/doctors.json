@@ -281,7 +281,12 @@
   "title": "Evangelical Doctor",
   "summary": "A Franciscan preacher whose sermons, saturated with Scripture, won back many from heresy.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/anthony-of-padua.png",
+   "download": "/printables/anthony-of-padua.jpg",
+   "alt": "One-page printable on St. Anthony of Padua (1195–1231), preacher, miracle-worker, and friend of the poor, covering his early life, preaching, mission, famous miracles, key virtues, and lasting legacy. Includes the line: \"Let your words teach and your actions speak for the Gospel.\""
+  }
  },
  {
   "id": "bonaventure",
