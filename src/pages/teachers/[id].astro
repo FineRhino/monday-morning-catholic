@@ -5,15 +5,29 @@ import Base from '../../layouts/Base.astro';
 import { ERAS } from '../../data/eras';
 
 export async function getStaticPaths() {
-  return (await getCollection('doctors')).map((d) => ({ params: { id: d.id }, props: { doctor: d } }));
+  // Same order as the Teachers page: by year of death.
+  const all = (await getCollection('doctors')).sort((a, b) => a.data.died - b.data.died || a.data.name.localeCompare(b.data.name));
+  const link = (d?: CollectionEntry<'doctors'>) => d && { id: d.id, name: d.data.name };
+  return all.map((d, i) => ({
+    params: { id: d.id },
+    props: { doctor: d, prev: link(all[i - 1]), next: link(all[i + 1]), position: i + 1, total: all.length },
+  }));
 }
-const { doctor } = Astro.props as { doctor: CollectionEntry<'doctors'> };
+interface Neighbor { id: string; name: string; }
+const { doctor, prev, next, position, total } = Astro.props as {
+  doctor: CollectionEntry<'doctors'>; prev?: Neighbor; next?: Neighbor; position: number; total: number;
+};
 const d = doctor.data;
 const era = ERAS.find((e) => e.id === d.era)!;
 const related = await getCollection('articles', (a) => (import.meta.env.DEV || !a.data.draft) && a.data.doctors.some((r) => r.id === doctor.id));
 ---
 <Base title={d.name} description={d.summary}>
   <div class="gut"><div class="in page" style={`--c: var(--${d.era})`}>
+    <nav class="pager" aria-label="Doctors of the Church">
+      {prev ? <a class="prev" href={`/teachers/${prev.id}/`} rel="prev" data-key="ArrowLeft"><span aria-hidden="true">←</span><span class="nm">{prev.name}</span></a> : <span></span>}
+      <span class="pos">{position} of {total}</span>
+      {next ? <a class="next" href={`/teachers/${next.id}/`} rel="next" data-key="ArrowRight"><span class="nm">{next.name}</span><span aria-hidden="true">→</span></a> : <span></span>}
+    </nav>
     <a class="label" href="/teachers/">doctors of the church · {era.name.toLowerCase()}</a>
     <h1>{d.name}</h1>
     <p class="meta">{d.role}{d.title && <> · <b>{d.title}</b></>}</p>
@@ -57,12 +71,36 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
         <ul>{related.map((a) => <li><a href={`/articles/${a.id}/`}>{a.data.title}</a></li>)}</ul>
       </section>
     )}
+    <nav class="pager bottom" aria-label="Doctors of the Church">
+      {prev ? <a class="prev" href={`/teachers/${prev.id}/`} rel="prev" data-key="ArrowLeft"><span aria-hidden="true">←</span><span class="nm">{prev.name}</span></a> : <span></span>}
+      <span class="pos">{position} of {total}</span>
+      {next ? <a class="next" href={`/teachers/${next.id}/`} rel="next" data-key="ArrowRight"><span class="nm">{next.name}</span><span aria-hidden="true">→</span></a> : <span></span>}
+    </nav>
   </div></div>
 </Base>
+
+<script>
+  // Left and right arrow keys move to the previous and next Doctor, unless someone is typing.
+  document.addEventListener('keydown', (e) => {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    if ((e.target as HTMLElement).closest('input, textarea, select, [contenteditable]')) return;
+    const a = document.querySelector<HTMLAnchorElement>(`.pager a[data-key="${e.key}"]`);
+    if (a) location.href = a.href;
+  });
+</script>
 
 <style>
   .page { display: grid; gap: 14px; padding-block: 36px 56px; justify-items: start; }
   .label { text-decoration: none; }
+  .pager { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 12px; width: 100%; font-size: 15px; }
+  .pager.bottom { margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--rule); }
+  .pager a { text-decoration: none; color: var(--muted); padding: 6px 12px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); display: flex; gap: 6px; min-width: 0; }
+  .pager .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pager a:hover { color: var(--ink); border-color: var(--gold); }
+  .pager .prev { justify-self: start; max-width: 100%; }
+  .pager .next { justify-self: end; max-width: 100%; }
+  .pager span[aria-hidden] { color: var(--gold); font-weight: 700; }
+  .pager .pos { font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
   h1 { font-size: clamp(36px, 6vw, 56px); color: var(--c); }
   .meta { margin: 0; color: var(--muted); }
   .meta b { color: var(--gold); font-weight: 500; }
