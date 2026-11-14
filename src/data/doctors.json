@@ -9,7 +9,44 @@
   "title": "Doctor of Unity",
   "summary": "Against Heresies refuted Gnosticism and named apostolic succession and the rule of faith as the test of true teaching.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/irenaeus-of-lyon.png",
+   "download": "/printables/irenaeus-of-lyon.jpg",
+   "alt": "One-page printable on St. Irenaeus of Lyon (c. 130–c. 202), bishop, martyr, and Doctor of the Church, covering who he was, why he is important, his major works and theology, key themes, and legacy. Includes the line: \"The glory of God is man fully alive, and the life of man is the vision of God.\""
+  },
+  "resources": [
+   {
+    "title": "Against Heresies",
+    "url": "https://www.newadvent.org/fathers/0103.htm",
+    "source": "New Advent",
+    "note": "His major work refuting Gnosticism, to read online, book by book."
+   },
+   {
+    "title": "Demonstration of the Apostolic Preaching",
+    "url": "https://ccel.org/ccel/irenaeus/demonstr",
+    "source": "Christian Classics Ethereal Library",
+    "note": "His short summary of Christian teaching."
+   },
+   {
+    "title": "Works of St. Irenaeus",
+    "url": "https://ccel.org/ccel/irenaeus",
+    "source": "Christian Classics Ethereal Library",
+    "note": "Everything CCEL has by him, including the surviving fragments."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Irenaeus",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070328.html",
+    "source": "Vatican",
+    "note": "A general audience on his life and his defense of apostolic Tradition."
+   },
+   {
+    "title": "St. Irenaeus",
+    "url": "https://www.newadvent.org/cathen/08130b.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "hilary-of-poitiers",
