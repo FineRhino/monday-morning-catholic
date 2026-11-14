@@ -12,4 +12,9 @@ export const WEBSITES: Website[] = [
     url: 'https://www.vatican.va/content/vatican/en.html',
     description: "The Vatican's official site: papal documents, the Catechism, and Church teaching.",
   },
+  {
+    name: 'New Advent',
+    url: 'https://www.newadvent.org/',
+    description: 'The Catholic Encyclopedia, writings of the Church Fathers, the Summa Theologica, and the Bible.',
+  },
 ];

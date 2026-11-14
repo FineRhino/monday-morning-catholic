@@ -112,7 +112,55 @@
   "title": "Father of Orthodoxy",
   "summary": "Held to Nicaea's teaching that the Son is one in being with the Father, through five exiles. Wrote On the Incarnation.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/athanasius.png",
+   "download": "/printables/athanasius.jpg",
+   "alt": "One-page printable on St. Athanasius (c. 296–373), Bishop of Alexandria and Doctor of the Church, champion of the divinity of Christ, covering who he was, the Arian controversy, his major works, key themes, and legacy. Includes the line: \"The Son of God became man so that we might become God.\""
+  },
+  "resources": [
+   {
+    "title": "On the Incarnation of the Word",
+    "url": "https://www.newadvent.org/fathers/2802.htm",
+    "source": "New Advent",
+    "note": "His classic account of why the Son of God became man."
+   },
+   {
+    "title": "Four Discourses Against the Arians",
+    "url": "https://www.newadvent.org/fathers/2816.htm",
+    "source": "New Advent",
+    "note": "His defense of Christ's full divinity."
+   },
+   {
+    "title": "Life of St. Anthony",
+    "url": "https://www.newadvent.org/fathers/2811.htm",
+    "source": "New Advent",
+    "note": "His life of St. Antony the Great, which shaped early monasticism."
+   },
+   {
+    "title": "Letters",
+    "url": "https://www.newadvent.org/fathers/2806.htm",
+    "source": "New Advent",
+    "note": "Including the Festal Letters."
+   },
+   {
+    "title": "Works of St. Athanasius",
+    "url": "https://ccel.org/ccel/athanasius",
+    "source": "Christian Classics Ethereal Library"
+   },
+   {
+    "title": "Pope Benedict XVI on St. Athanasius",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070620.html",
+    "source": "Vatican",
+    "note": "A general audience on his life and his defense of Nicaea."
+   },
+   {
+    "title": "St. Athanasius",
+    "url": "https://www.newadvent.org/cathen/02035a.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "ephrem-the-syrian",
