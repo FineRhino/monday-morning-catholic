@@ -9,8 +9,11 @@ interface Props { title?: string; description?: string; /** Keep search engines 
 const { title, description = 'Catholic theology and practice from a lay perspective.', noindex = false } = Astro.props;
 const pageTitle = title ? `${title} · Monday Morning Catholic` : 'Monday Morning Catholic';
 const path = Astro.url.pathname;
+/** "The Faith" groups the three movements of the book into one menu with a dropdown. */
+const faith = SECTIONS.filter((s) => ['believe', 'explain', 'live'].includes(s.id)).map((s) => ({ href: `/${s.id}/`, label: s.name }));
+const faithOn = faith.some((f) => path.startsWith(f.href));
 const nav = [
-  ...SECTIONS.filter((s) => s.id !== 'notes').map((s) => ({ href: `/${s.id}/`, label: s.name })),
+  ...SECTIONS.filter((s) => s.id === 'practices').map((s) => ({ href: `/${s.id}/`, label: s.name })),
   { href: '/prayers/', label: 'Prayers' },
   { href: '/music/', label: 'Music' },
   { href: '/teachers/', label: 'Teachers' },
@@ -39,6 +42,12 @@ const nav = [
           Monday Morning Catholic
         </a>
         <div class="links">
+          <div class="menu" data-menu>
+            <button type="button" class:list={['menu-btn', { on: faithOn }]} aria-expanded="false" aria-controls="faith-menu">The Faith <span class="caret" aria-hidden="true">▾</span></button>
+            <div class="sub" id="faith-menu">
+              {faith.map((f) => <a href={f.href} class:list={{ on: path.startsWith(f.href) }}>{f.label}</a>)}
+            </div>
+          </div>
           {nav.map((n) => <a href={n.href} class:list={{ on: path.startsWith(n.href) }}>{n.label}</a>)}
           {accountsEnabled && <AccountLink client:only="svelte" current={path.startsWith('/account/')} />}
         </div>
@@ -56,6 +65,17 @@ const nav = [
 </html>
 
 <script>
+  // "The Faith" menu: hovering opens it on a computer (CSS); tapping or Enter toggles it, and
+  // Escape or a click elsewhere closes it.
+  document.querySelectorAll<HTMLElement>('[data-menu]').forEach((menu) => {
+    const btn = menu.querySelector<HTMLButtonElement>('.menu-btn')!;
+    const set = (open: boolean) => { menu.toggleAttribute('data-open', open); btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', () => set(!menu.hasAttribute('data-open')));
+    menu.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); btn.focus(); } });
+    document.addEventListener('click', (e) => { if (!menu.contains(e.target as Node)) set(false); });
+    menu.addEventListener('focusout', (e) => { if (!menu.contains(e.relatedTarget as Node)) set(false); });
+  });
+
   // Links to other websites open in a new tab; links within this site open in the same tab.
   // Set at click time so it also covers article text and Svelte islands rendered later.
   document.addEventListener('click', (e) => {
@@ -75,6 +95,21 @@ const nav = [
   /* :global so the Sign in link, rendered by a Svelte island, matches the others. */
   .links :global(a) { color: var(--muted); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
   .links :global(a:hover), .links :global(a.on) { color: var(--ink); border-color: var(--gold); }
+
+  .menu { position: relative; }
+  .menu-btn { -webkit-tap-highlight-color: transparent; background: none; border: 0; border-bottom: 2px solid transparent; padding: 2px 0; color: var(--muted); font-size: inherit; display: inline-flex; align-items: center; gap: 4px; }
+  .menu-btn:hover, .menu-btn.on, .menu[data-open] .menu-btn { color: var(--ink); border-color: var(--gold); }
+  .caret { font-size: 11px; color: var(--gold); transition: transform .15s; }
+  .menu[data-open] .caret { transform: rotate(180deg); }
+  /* padding-top bridges the gap so the menu stays open while the pointer moves down to it. */
+  .sub { display: none; position: absolute; left: -12px; top: 100%; padding-top: 8px; z-index: 6; }
+  .menu[data-open] .sub { display: block; }
+  @media (hover: hover) { .menu:hover .sub { display: block; } .menu:hover .caret { transform: rotate(180deg); } }
+  .sub::before { content: ''; position: absolute; inset: 8px 0 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / .12); }
+  .sub :global(a) { position: relative; display: block; min-width: 140px; padding: 8px 14px; border-bottom: 0; color: var(--ink); }
+  .sub :global(a:hover), .sub :global(a.on) { background: var(--gold-soft); color: var(--ink); }
+  .sub :global(a:first-child) { margin-top: 4px; }
+  .sub :global(a:last-child) { margin-bottom: 4px; }
   footer { padding-block: 20px 40px; font-size: 14px; color: var(--muted); }
   footer .in { border-top: 1px solid var(--rule); padding-top: 12px; }
   footer p { margin: 4px 0; }
