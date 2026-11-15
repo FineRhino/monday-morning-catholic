@@ -27,7 +27,7 @@
     </button>
   </div>
   <p class="text">{prayer.text}</p>
-  <a class="all" href="/prayers/">All prayers, with search</a>
+  <a class="all" href="/practices/#prayers">All prayers, with search</a>
 </div>
 
 <style>

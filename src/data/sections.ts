@@ -32,8 +32,8 @@ export const SECTIONS: Section[] = [
   },
   {
     id: 'practices',
-    name: 'Practices',
-    tagline: 'Morning offering, examen, Scripture habits, and Confession guides.',
+    name: 'Practices and Prayers',
+    tagline: 'Morning offering, examen, Scripture habits, Confession guides, and traditional prayers.',
     planned: ['The Morning Offering', 'The Daily Examen', 'A Five-Minute Scripture Habit', 'Preparing for Confession', 'The Angelus'],
   },
   {

@@ -1,0 +1,82 @@
+---
+/**
+ * Practices and Prayers: the Practices section (guided practices, articles, planned topics)
+ * and the full prayer book on one page. Prayers keep their anchors, e.g. /practices/#angelus.
+ * The old /prayers/ address forwards here (src/pages/prayers/index.astro).
+ */
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PrayerIndex from '../../components/PrayerIndex.svelte';
+import { PRAYERS } from '../../data/prayers';
+import { sectionById } from '../../data/sections';
+
+const section = sectionById('practices')!;
+const showDrafts = import.meta.env.DEV;
+const articles = (await getCollection('articles', (a) => a.data.section === 'practices' && (showDrafts || !a.data.draft)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+/** Practices with their own guided page on this site. */
+const guided = [
+  { href: '/examen/', title: 'The Daily Examen', text: 'A guided, step-by-step look back on your day with God: thanks, review, mercy, and tomorrow.' },
+];
+const written = new Set([...articles.map((a) => a.data.title), ...guided.map((g) => g.title)]);
+const planned = section.planned.filter((t) => !written.has(t));
+---
+<Base title="Practices and Prayers" description="Daily Catholic practices, such as the Examen, and traditional prayers you can search and save.">
+  <div class="gut"><div class="in page">
+    <header>
+      <div class="label">practices and prayers</div>
+      <h1>Practices and Prayers</h1>
+      <p class="muted prose">Habits that keep faith alive through the week, and the traditional prayers of the Church.</p>
+      <nav class="jump" aria-label="On this page"><a href="#practices">Practices</a><a href="#prayers">Prayers</a></nav>
+    </header>
+
+    <section id="practices" class="part" aria-labelledby="practices-h">
+      <h2 id="practices-h">Practices</h2>
+      <p class="muted prose">{section.tagline}</p>
+      <ul class="cards">
+        {guided.map((g) => (
+          <li><a href={g.href}><span class="tag">guided</span><h3>{g.title}</h3><p>{g.text}</p></a></li>
+        ))}
+        {articles.map((a) => (
+          <li><a href={`/articles/${a.id}/`}>
+            <span class="tag">article{a.data.draft && ' · draft'}</span>
+            <h3>{a.data.title}</h3>
+            <p>{a.data.description}</p>
+          </a></li>
+        ))}
+      </ul>
+      {planned.length > 0 && (
+        <div class="soon">
+          <h3>Coming soon</h3>
+          <ul>{planned.map((t) => <li>{t}</li>)}</ul>
+        </div>
+      )}
+    </section>
+
+    <section id="prayers" class="part" aria-labelledby="prayers-h">
+      <h2 id="prayers-h">Prayers</h2>
+      <p class="muted prose">Traditional prayers of the Church. Search by name or by words in the prayer, and save the ones you pray often. Saved prayers stay on this device, or in your account if you sign in.</p>
+      <PrayerIndex client:load prayers={PRAYERS} />
+    </section>
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 40px; padding-block: 36px 56px; }
+  header { display: grid; gap: 8px; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .jump a { font-size: 14px; text-decoration: none; padding: 3px 12px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+  .jump a:hover { border-color: var(--gold); }
+  .part { display: grid; gap: 14px; justify-items: start; scroll-margin-top: 80px; }
+  .part > h2 { font-size: clamp(28px, 4vw, 36px); border-bottom: 2px solid var(--gold); padding-bottom: 6px; justify-self: stretch; }
+  .part > p { margin: 0; }
+  .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 12px; justify-self: stretch; }
+  .cards a { display: grid; gap: 6px; align-content: start; padding: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; text-decoration: none; height: 100%; box-sizing: border-box; }
+  .cards a:hover { border-color: var(--gold); }
+  .cards h3 { font-size: 22px; }
+  .cards p { margin: 0; color: var(--muted); }
+  .tag { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--gold); }
+  .soon h3 { font-size: 20px; margin-bottom: 6px; }
+  .soon ul { margin: 0; padding-left: 20px; color: var(--muted); display: grid; gap: 4px; }
+</style>

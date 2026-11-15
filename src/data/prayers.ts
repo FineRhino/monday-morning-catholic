@@ -1,7 +1,7 @@
 export const PRAYER_CATEGORIES = ['Essential', 'Daily', 'Marian', 'Saints', 'Devotions'] as const;
 export type PrayerCategory = (typeof PRAYER_CATEGORIES)[number];
 
-/** Traditional prayers (public domain). `id` is also the anchor on /prayers/, e.g. /prayers/#angelus. */
+/** Traditional prayers (public domain). `id` is also the anchor on /practices/, e.g. /practices/#angelus. */
 export interface Prayer { id: string; title: string; category: PrayerCategory; text: string; note?: string; }
 
 export const PRAYERS: Prayer[] = [
@@ -22,7 +22,7 @@ export const PRAYERS: Prayer[] = [
 ];
 
 export const RHYTHM = [
-  { id: 'morning', title: 'Morning offering', hint: 'Give the day to God before email', when: 'Morning', href: '/prayers/#offering', cta: 'Pray' },
-  { id: 'noon', title: 'The Angelus', hint: 'A one-minute pause at midday', when: 'Noon', href: '/prayers/#angelus', cta: 'Pray' },
+  { id: 'morning', title: 'Morning offering', hint: 'Give the day to God before email', when: 'Morning', href: '/practices/#offering', cta: 'Pray' },
+  { id: 'noon', title: 'The Angelus', hint: 'A one-minute pause at midday', when: 'Noon', href: '/practices/#angelus', cta: 'Pray' },
   { id: 'evening', title: 'Examen', hint: 'Look back on the day with gratitude', when: 'Evening', href: '/examen/', cta: 'Begin' },
 ] as const;

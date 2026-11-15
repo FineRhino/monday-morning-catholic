@@ -1,0 +1,25 @@
+---
+/**
+ * A page that has moved. Forwards to `to`; an #anchor on the old address replaces the one in `to`
+ * (e.g. /prayers/#angelus → /practices/#angelus, /prayers/ → /practices/#prayers).
+ * The meta refresh covers visitors without JavaScript; it drops the anchor but still lands on the right page.
+ */
+interface Props { to: string; title: string; }
+const { to, title } = Astro.props;
+const canonical = new URL(to, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · Monday Morning Catholic</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+    <script is:inline define:vars={{ to }}>const u = new URL(to, location.href); if (location.hash) u.hash = location.hash; location.replace(u);</script>
+  </head>
+  <body>
+    <p>This page has moved to <a href={to}>{title}</a>.</p>
+  </body>
+</html>

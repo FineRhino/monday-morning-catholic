@@ -4,7 +4,8 @@ import Base from '../layouts/Base.astro';
 import { SECTIONS, type Section } from '../data/sections';
 
 export function getStaticPaths() {
-  return SECTIONS.map((s) => ({ params: { section: s.id }, props: { section: s } }));
+  // Practices has its own page, combined with Prayers: src/pages/practices/index.astro.
+  return SECTIONS.filter((s) => s.id !== 'practices').map((s) => ({ params: { section: s.id }, props: { section: s } }));
 }
 const { section } = Astro.props as { section: Section };
 const showDrafts = import.meta.env.DEV;

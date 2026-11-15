@@ -1,10 +1,11 @@
 <script lang="ts">
-  interface Doc { id: string; name: string; died: number; era: string; summary: string; }
+  /** `doctor` false draws a ring instead of a filled dot (other saints and theologians). */
+  interface Doc { id: string; name: string; died: number; era: string; summary: string; doctor?: boolean; }
   let { doctors, initial = 'augustine-of-hippo' }: { doctors: Doc[]; initial?: string } = $props();
 
-  const L = 30, R = 975, BASE = 110, MIN = 100, MAX = 2000;
+  const L = 30, R = 975, BASE = 150, MIN = 100, MAX = 2050;
   const x = (v: number) => L + ((v - MIN) / (MAX - MIN)) * (R - L);
-  const ticks = Array.from({ length: 18 }, (_, i) => 200 + i * 100);
+  const ticks = Array.from({ length: 19 }, (_, i) => 200 + i * 100);
 
   // Stack dots that would overlap.
   const placed = (() => {
@@ -19,10 +20,11 @@
   let sel = $state(Math.max(0, doctors.findIndex((d) => d.id === initial)));
   const cur = $derived(placed[sel]);
   const step = (n: number) => (sel = (sel + n + placed.length) % placed.length);
+  const hasOthers = doctors.some((d) => d.doctor === false);
 </script>
 
 <div class="box">
-  <svg viewBox="0 0 1000 150" role="group" aria-label="Timeline of the Doctors of the Church by year of death">
+  <svg class="chart" viewBox="0 0 1000 190" role="group" aria-label="Timeline of Doctors, saints, and theologians by year of death">
     <line x1={L} x2={R} y1={BASE} y2={BASE} style="stroke: var(--ink)" stroke-width="1.2" />
     {#each ticks as t}
       <line x1={x(t)} x2={x(t)} y1={BASE} y2={BASE + 6} style="stroke: var(--muted)" />
@@ -31,15 +33,18 @@
     {#each placed as d, i (d.id)}
       <line x1={d.cx} x2={d.cx} y1={BASE} y2={d.cy} style="stroke: var(--rule)" />
       <circle
-        class="dot" class:sel={i === sel}
+        class="dot" class:sel={i === sel} class:ring={d.doctor === false}
         cx={d.cx} cy={d.cy} r={i === sel ? 8 : 6}
-        style="fill: var(--{d.era}); animation-delay: {i * 35}ms"
+        style="--dc: var(--{d.era}); animation-delay: {i * 35}ms"
         role="button" tabindex="0" aria-label="{d.name}, died {d.died}"
         onclick={() => (sel = i)}
         onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), (sel = i))}
       ><title>{d.name}</title></circle>
     {/each}
   </svg>
+  {#if hasOthers}
+    <p class="legend"><span class="k"><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" class="dot" /></svg> Doctor of the Church</span><span class="k"><svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.2" class="dot ring" /></svg> Other saint or theologian</span></p>
+  {/if}
 </div>
 
 <div class="panel detail" style="--c: var(--{cur.era})" aria-live="polite">
@@ -54,8 +59,13 @@
 
 <style>
   .box { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 16px; overflow-x: auto; }
-  svg { display: block; min-width: 720px; width: 100%; height: auto; font-family: var(--body); font-size: 12px; }
-  .dot { cursor: pointer; transform-box: fill-box; animation: pop .5s both; }
+  svg.chart { display: block; min-width: 720px; width: 100%; height: auto; font-family: var(--body); font-size: 12px; }
+  .dot { cursor: pointer; transform-box: fill-box; animation: pop .5s both; fill: var(--dc, var(--muted)); }
+  .dot.ring { fill: var(--surface); stroke: var(--dc, var(--muted)); stroke-width: 2.5; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 8px 0 0; font-size: 13.5px; color: var(--muted); }
+  .legend .k { display: inline-flex; align-items: center; gap: 6px; }
+  .legend svg { width: 12px; height: 12px; }
+  .legend .dot { animation: none; cursor: default; }
   .dot:hover { r: 8; }
   @keyframes pop { from { opacity: .25; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   .detail { grid-template-columns: auto minmax(0, 1fr); gap: 4px 16px; margin-top: 12px; }

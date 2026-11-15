@@ -1,0 +1,118 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { MUSIC_QUOTES, MUSICIANS, ARTISTS, WRITERS, type Maker } from '../../data/arts';
+
+const groups: { id: string; heading: string; sub: string; intro: string; people: Maker[] }[] = [
+  { id: 'art', heading: 'Art', sub: 'Artists', intro: 'Painters and sculptors whose work makes the faith visible.', people: ARTISTS },
+  { id: 'literature', heading: 'Literature', sub: 'Writers', intro: 'Poets and authors whose books carry the faith.', people: WRITERS },
+];
+---
+<Base title="Music, Art and Literature" description="What the saints say about music, and Catholic musicians, artists, and writers worth knowing.">
+  <div class="gut"><div class="in page">
+    <header>
+      <div class="label">music, art and literature</div>
+      <h1>Music, Art and Literature</h1>
+      <p class="muted prose">Beauty that points to God: the saints on music, and musicians, artists, and writers whose work carries the faith.</p>
+      <nav class="jump" aria-label="On this page">
+        <a href="#music">Music</a><a href="#art">Art</a><a href="#literature">Literature</a>
+      </nav>
+    </header>
+
+    <section id="music" class="part" aria-labelledby="music-h">
+      <h2 id="music-h">Music</h2>
+      <h3 class="sub">The saints on music</h3>
+      <div class="quotes">
+        {MUSIC_QUOTES.map((q) => (
+          <figure>
+            <blockquote>{q.text}</blockquote>
+            <figcaption><b>{q.who}</b> <span>{q.source}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <h3 class="sub">Musicians</h3>
+      <ul class="tiles">
+        {MUSICIANS.map((a) => (
+          <li>
+            <a class="pic" href={`https://www.youtube.com/watch?v=${a.featured.videoId}`} aria-label={`Watch ${a.featured.title} by ${a.name} on YouTube`}>
+              <img src={`https://i.ytimg.com/vi/${a.featured.videoId}/maxresdefault.jpg`} alt="" width="1280" height="720" loading="lazy" referrerpolicy="no-referrer" />
+              <span class="play" aria-hidden="true">▶</span>
+            </a>
+            <div class="body">
+              <h4>{a.name}</h4>
+              <p>{a.about}</p>
+              <ul class="links">
+                {a.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {groups.map((g) => (
+      <section id={g.id} class="part" aria-labelledby={`${g.id}-h`}>
+        <h2 id={`${g.id}-h`}>{g.heading}</h2>
+        <h3 class="sub">{g.sub}</h3>
+        <p class="intro muted">{g.intro}</p>
+        <ul class="tiles">
+          {g.people.map((m) => (
+            <li>
+              <div class="pic still">
+                <Picture src={m.image} alt={m.imageAlt} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[360, 640]} sizes="(max-width: 600px) calc(100vw - 32px), 360px" loading="lazy" />
+              </div>
+              <div class="body">
+                <h4>{m.name} <span class="yrs">{m.years}</span></h4>
+                <p>{m.about}</p>
+                <ul class="links">
+                  {m.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
+                </ul>
+                <p class="credit">Image: <a href={m.credit.url}>{m.credit.label}</a> (public domain)</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 40px; padding-block: 36px 56px; }
+  header { display: grid; gap: 8px; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  .jump { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .jump a { font-size: 14px; text-decoration: none; padding: 3px 12px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); }
+  .jump a:hover { border-color: var(--gold); }
+
+  .part { display: grid; gap: 14px; scroll-margin-top: 80px; }
+  .part > h2 { font-size: clamp(28px, 4vw, 36px); border-bottom: 2px solid var(--gold); padding-bottom: 6px; }
+  .sub { font-size: 22px; margin-top: 6px; }
+  .intro { margin: -8px 0 0; }
+
+  .quotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 12px; }
+  figure { margin: 0; display: grid; gap: 10px; align-content: space-between; padding: 18px 20px; background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--gold); border-radius: 8px; }
+  blockquote { margin: 0; font-family: var(--display); font-style: italic; font-size: 19px; line-height: 1.45; }
+  blockquote::before { content: '“'; }
+  blockquote::after { content: '”'; }
+  figcaption { font-size: 14.5px; display: grid; gap: 1px; }
+  figcaption b { font-family: var(--label); letter-spacing: .06em; color: var(--gold); }
+  figcaption span { color: var(--muted); }
+
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .tiles > li { display: grid; grid-template-rows: auto 1fr; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+  .pic { position: relative; display: block; aspect-ratio: 16 / 9; background: var(--sunk); overflow: hidden; }
+  .pic img, .pic :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .pic.still :global(img) { object-position: center 25%; }
+  .play { position: absolute; right: 10px; bottom: 10px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: rgb(0 0 0 / .65); color: #fff; font-size: 13px; padding-left: 2px; transition: background .15s; }
+  a.pic:hover .play { background: var(--gold); }
+  .body { display: grid; gap: 6px; align-content: start; padding: 14px 16px 16px; }
+  .body h4 { margin: 0; font-family: var(--display); font-size: 21px; line-height: 1.2; }
+  .yrs { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); margin-left: 4px; }
+  .body p { margin: 0; font-size: 15px; color: var(--muted); }
+  .links { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 3px; font-size: 13.5px; }
+  .links a::before { content: '▸ '; color: var(--gold); }
+  .body .credit { margin-top: 6px; font-size: 12px; }
+  .credit a { color: inherit; }
+</style>

@@ -4,6 +4,7 @@ import { SECTIONS } from '../data/sections';
 import AccountLink from '../components/AccountLink.svelte';
 import SyncNotice from '../components/SyncNotice.svelte';
 import { accountsEnabled } from '../lib/supabase';
+import Sep from '../components/NavCross.astro';
 
 interface Props { title?: string; description?: string; /** Keep search engines out (private pages). */ noindex?: boolean; }
 const { title, description = 'Catholic theology and practice from a lay perspective.', noindex = false } = Astro.props;
@@ -13,9 +14,8 @@ const path = Astro.url.pathname;
 const faith = SECTIONS.filter((s) => ['believe', 'explain', 'live'].includes(s.id)).map((s) => ({ href: `/${s.id}/`, label: s.name }));
 const faithOn = faith.some((f) => path.startsWith(f.href));
 const nav = [
-  ...SECTIONS.filter((s) => s.id === 'practices').map((s) => ({ href: `/${s.id}/`, label: s.name })),
-  { href: '/prayers/', label: 'Prayers' },
-  { href: '/music/', label: 'Music' },
+  { href: '/practices/', label: 'Practices and Prayers' },
+  { href: '/arts/', label: 'Music, Art and Literature' },
   { href: '/teachers/', label: 'Teachers' },
   { href: '/resources/', label: 'Resources' },
   { href: '/notes/', label: 'Notes' },
@@ -48,8 +48,8 @@ const nav = [
               {faith.map((f) => <a href={f.href} class:list={{ on: path.startsWith(f.href) }}>{f.label}</a>)}
             </div>
           </div>
-          {nav.map((n) => <a href={n.href} class:list={{ on: path.startsWith(n.href) }}>{n.label}</a>)}
-          {accountsEnabled && <AccountLink client:only="svelte" current={path.startsWith('/account/')} />}
+          {nav.map((n) => <span class="item"><Sep /><a href={n.href} class:list={{ on: path.startsWith(n.href) }}>{n.label}</a></span>)}
+          {accountsEnabled && <span class="item"><Sep /><AccountLink client:only="svelte" current={path.startsWith('/account/')} /></span>}
         </div>
       </div>
     </nav>
@@ -91,7 +91,9 @@ const nav = [
   nav.top { position: sticky; top: 0; z-index: 5; background: var(--surface); border-bottom: 1px solid var(--rule); padding-top: env(safe-area-inset-top, 0px); }
   nav.top .in { display: flex; align-items: center; gap: 20px; padding-block: 12px; flex-wrap: wrap; }
   .brand { font-family: var(--display); font-weight: 700; font-size: 20px; display: flex; align-items: center; gap: 10px; margin-right: auto; text-decoration: none; }
-  .links { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 15px; }
+  .links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 15px; }
+  /* Each cross travels with the item after it, so a wrapped line never ends in a cross. */
+  .item { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
   /* :global so the Sign in link, rendered by a Svelte island, matches the others. */
   .links :global(a) { color: var(--muted); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
   .links :global(a:hover), .links :global(a.on) { color: var(--ink); border-color: var(--gold); }

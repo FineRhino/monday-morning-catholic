@@ -9,8 +9,11 @@ import TodayReadings from '../components/TodayReadings.astro';
 import DoctorsTimeline from '../components/DoctorsTimeline.svelte';
 import { SECTIONS } from '../data/sections';
 import { ERAS } from '../data/eras';
+import { kindsOf } from '../data/teachers';
 
-const doctors = (await getCollection('doctors')).map((d) => ({ id: d.id, ...d.data })).sort((a, b) => a.died - b.died);
+const doctors = (await getCollection('doctors'))
+  .map((d) => ({ id: d.id, name: d.data.name, died: d.data.died, era: d.data.era, summary: d.data.summary, doctor: kindsOf(d.data).doctor }))
+  .sort((a, b) => a.died - b.died);
 /** Sections with at least one published article; the rest are tagged "coming soon". */
 const liveSections = new Set((await getCollection('articles', (a) => !a.data.draft)).map((a) => a.data.section));
 ---
@@ -43,7 +46,7 @@ const liveSections = new Set((await getCollection('articles', (a) => !a.data.dra
         {SECTIONS.map((s) => (
           <a class="sec" href={`/${s.id}/`}><h3>{s.name}{!liveSections.has(s.id) && <span class="soon">coming soon</span>}</h3><p>{s.tagline}</p></a>
         ))}
-        <a class="sec" href="/teachers/"><h3>Teachers</h3><p>The Doctors of the Church and great theologians, with key ideas.</p></a>
+        <a class="sec" href="/teachers/"><h3>Teachers</h3><p>Doctors of the Church, saints, and theologians, with key ideas.</p></a>
       </div>
     </div>
   </section>
@@ -52,8 +55,8 @@ const liveSections = new Set((await getCollection('articles', (a) => !a.data.dra
     <div class="in">
       <div>
         <div class="label">teachers</div>
-        <h2>Twenty centuries of Doctors</h2>
-        <p class="muted">Tap a dot to meet a Doctor of the Church. Dots are placed by year of death.</p>
+        <h2>Twenty centuries of teachers</h2>
+        <p class="muted">Tap a dot to meet a Doctor of the Church, saint, or theologian. Dots are placed by year of death.</p>
       </div>
       <DoctorsTimeline client:visible doctors={doctors} />
       <div class="legend">{ERAS.map((e) => <span><i class="sw" style={`background:var(--${e.id})`}></i>{e.name}</span>)}</div>

@@ -20,13 +20,14 @@ Drafts (`draft: true`) appear in `npm run dev` but are left out of the public pa
 | Path | What it holds |
 | --- | --- |
 | `src/content/articles/` | Articles as MDX. The frontmatter sets the section, related Doctors, and Catechism paragraphs. |
-| `src/data/doctors.json` | The 38 Doctors of the Church, loaded as a typed content collection. |
+| `src/data/doctors.json` | The Teachers: the 38 Doctors of the Church plus other saints and theologians, loaded as a typed content collection (still named `doctors`). See [Adding a saint or theologian](#adding-a-saint-or-theologian). |
 | `src/data/sections.ts` | Site sections (Believe, Explain, Live, Practices, Notes) and any planned topics shown publicly. |
 | `src/data/book.ts` | The book outline for Believe, Explain, and Live. Used only by the private book notes. |
 | `src/data/prayers.ts`, `verses.ts` | Prayer texts and verses of the day (Douay-Rheims, public domain). |
+| `src/data/arts.ts` | The Music, Art and Literature page (`/arts/`): saints' quotes on music, and the Musicians, Artists, and Writers tiles. Artist and writer images are public-domain files in `src/assets/arts/`. |
 | `src/lib/store.svelte.ts` | Local-first personal data (prayer list, saved prayers and passages, daily rhythm) kept in `localStorage`. |
 | `src/components/` | Interactive Svelte islands: dashboard widgets, the Doctors timeline, and `<Scripture>` for saveable verses in articles. |
-| `src/pages/` | Routes: dashboard home, section pages, articles, teachers, about. |
+| `src/pages/` | Routes: dashboard home, section pages, Practices and Prayers (`/practices/`), Music, Art and Literature (`/arts/`), articles, teachers, resources, about. The old `/prayers/` and `/music/` addresses forward to the new pages (`src/components/Moved.astro`). |
 
 ## Writing an article
 
@@ -62,6 +63,32 @@ These pages are ordinary static HTML. Cloudflare Access keeps them private, not 
 5. Open `/account/notes/` in a private window. You should get Cloudflare's sign-in page, not the notes.
 
 The article files are in this repository, so the notes are private only while the GitHub repository is private too.
+
+## Adding a saint or theologian
+
+Add an entry to `src/data/doctors.json`. Leave out `proclaimed` for anyone who isn't a Doctor of the Church, and mark what they are:
+
+```json
+{
+  "id": "gregory-of-nyssa",
+  "name": "Gregory of Nyssa",
+  "era": "era1",
+  "died": 395,
+  "role": "Bishop · Cappadocia",
+  "title": "Father of Fathers",
+  "summary": "One or two sentences on why they matter.",
+  "woman": false,
+  "lay": false,
+  "saint": true,
+  "theologian": true
+}
+```
+
+- A Doctor has a `proclaimed` year, and always counts as a saint and a theologian.
+- `saint: true` means canonized. Leave it out for Blesseds, Venerables, and others.
+- `era` is one of the four periods in `src/data/eras.ts`: `era1` (to 750), `era2` (750–1500), `era3` (1500–1700), `era4` (1700 on).
+
+They appear on the Teachers page, in the timeline (as a ring rather than a filled dot), in the filters and counts, and get their own page with the previous and next arrows. Printables and resource links work the same way as for Doctors.
 
 ## Adding a printable
 

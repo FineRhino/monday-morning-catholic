@@ -2,13 +2,24 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+/**
+ * Teachers of the faith: Doctors of the Church, other saints, and theologians.
+ * (The collection keeps its original name, `doctors`, so article references still work.)
+ * A Doctor is anyone with a `proclaimed` year, and always counts as a saint and a theologian.
+ * See src/data/teachers.ts.
+ */
 const doctors = defineCollection({
   loader: file('src/data/doctors.json'),
   schema: ({ image }) => z.object({
     name: z.string(),
     era: z.enum(['era1', 'era2', 'era3', 'era4']),
     died: z.number().int(),
-    proclaimed: z.number().int(),
+    /** The year the Church proclaimed them a Doctor. Leave out for anyone who isn't one. */
+    proclaimed: z.number().int().optional(),
+    /** Canonized. Implied for Doctors. */
+    saint: z.boolean().default(false),
+    /** Known for theological writing or teaching. Implied for Doctors. */
+    theologian: z.boolean().default(false),
     role: z.string(),
     title: z.string().optional(),
     summary: z.string(),
@@ -24,7 +35,7 @@ const doctors = defineCollection({
       download: z.string().startsWith('/printables/'),
       alt: z.string(),
     }).optional(),
-    /** Online sources for this Doctor's writings, shown next to the printable. */
+    /** Online sources for their writings, shown next to the printable. */
     resources: z.array(z.object({
       title: z.string(),
       url: z.url({ protocol: /^https$/ }),

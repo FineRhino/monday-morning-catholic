@@ -3,52 +3,150 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import DoctorsTimeline from '../../components/DoctorsTimeline.svelte';
 import { ERAS } from '../../data/eras';
+import { kindsOf, kindLabels, countKinds, plural } from '../../data/teachers';
 
-const doctors = (await getCollection('doctors')).map((d) => ({ id: d.id, ...d.data })).sort((a, b) => a.died - b.died);
+const people = (await getCollection('doctors'))
+  .map((d) => ({ id: d.id, ...d.data, kinds: kindsOf(d.data) }))
+  .sort((a, b) => a.died - b.died || a.name.localeCompare(b.name));
+const total = countKinds(people.map((p) => p.kinds));
+const countLine = (c: ReturnType<typeof countKinds>) =>
+  [plural(c.doctors, 'Doctor', 'Doctors'), plural(c.saints, 'saint', 'saints'), plural(c.theologians, 'theologian', 'theologians')].join(' · ');
 ---
-<Base title="Teachers" description="The 38 Doctors of the Church and their main contributions to the faith.">
+<Base title="Doctors, Saints and Theologians" description="The Doctors of the Church, along with other saints and theologians, and their main contributions to the faith.">
   <div class="gut"><div class="in page">
     <header>
       <div class="label">teachers</div>
-      <h1>Doctors of the Church</h1>
-      <p class="muted prose">Saints whose writing or preaching the Church recognizes as a lasting guide for all believers. The title has been given to {doctors.length} saints.</p>
+      <h1>Doctors, Saints and Theologians of the Church</h1>
+      <p class="muted prose">Teachers of the faith across twenty centuries. The Church has named {total.doctors} saints Doctors of the Church for the lasting value of their teaching; alongside them are other saints and theologians whose work still guides believers.</p>
+      <p class="totals">{countLine(total)}</p>
     </header>
-    <DoctorsTimeline client:visible doctors={doctors} />
+
+    <DoctorsTimeline client:visible doctors={people.map((p) => ({ id: p.id, name: p.name, died: p.died, era: p.era, summary: p.summary, doctor: p.kinds.doctor }))} />
+
+    <div class="controls" data-controls hidden>
+      <div class="show" role="group" aria-label="Show">
+        <span class="lbl">Show</span>
+        <button type="button" class="ghost" data-show="all" aria-pressed="true">Everyone</button>
+        <button type="button" class="ghost" data-show="doctor" aria-pressed="false">Doctors</button>
+        <button type="button" class="ghost" data-show="saint" aria-pressed="false">Saints</button>
+        <button type="button" class="ghost" data-show="theologian" aria-pressed="false">Theologians</button>
+        <button type="button" class="ghost" data-show="other" aria-pressed="false">Not Doctors</button>
+      </div>
+      <label class="sort"><span class="lbl">Sort</span>
+        <select class="field" data-sort>
+          <option value="died">By year of death</option>
+          <option value="name">By name</option>
+        </select>
+      </label>
+      <input class="field find" type="search" placeholder="Find a name" aria-label="Find a name" data-find />
+      <p class="showing muted" aria-live="polite" data-showing></p>
+    </div>
+
     {ERAS.map((e) => {
-      const list = doctors.filter((d) => d.era === e.id);
+      const list = people.filter((d) => d.era === e.id);
       return (
-        <section style={`--c: var(--${e.id})`}>
-          <div class="era-head"><h2>{e.name}</h2><span>{e.span} · {list.length} doctors</span></div>
+        <section style={`--c: var(--${e.id})`} data-era>
+          <div class="era-head"><h2>{e.name}</h2><span>{e.span}</span><span class="cnt">{countLine(countKinds(list.map((p) => p.kinds)))}</span></div>
           <div class="grid">
             {list.map((d) => (
-              <a class="card" href={`/teachers/${d.id}/`}>
+              <a class="card" href={`/teachers/${d.id}/`} data-card data-name={d.name} data-died={d.died}
+                data-doctor={String(d.kinds.doctor)} data-saint={String(d.kinds.saint)} data-theologian={String(d.kinds.theologian)}>
                 <span class="yr">{d.died}</span>
                 <h3>{d.name}</h3>
-                <span class="meta">{d.role}{d.title && <b> · {d.title}</b>}</span>
+                <span class="meta" title={d.title ? `${d.role} · ${d.title}` : d.role}>{d.role}{d.title && ` · ${d.title}`}</span>
+                <span class="kinds">{kindLabels(d.kinds).map((k) => <span class:list={['kind', k.toLowerCase()]}>{k}</span>)}</span>
                 <p>{d.summary}</p>
               </a>
             ))}
           </div>
+          <p class="none muted" hidden data-none>No one in this period matches.</p>
         </section>
       );
     })}
   </div></div>
 </Base>
 
+<script>
+  // Filter and sort the cards within each period. The choice is kept in the address (?show=saint&sort=name)
+  // so it survives a refresh and can be shared. Without JavaScript, everyone is listed by year of death.
+  const controls = document.querySelector<HTMLElement>('[data-controls]')!;
+  const showBtns = [...controls.querySelectorAll<HTMLButtonElement>('[data-show]')];
+  const sortSel = controls.querySelector<HTMLSelectElement>('[data-sort]')!;
+  const find = controls.querySelector<HTMLInputElement>('[data-find]')!;
+  const showing = controls.querySelector<HTMLElement>('[data-showing]')!;
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-card]')];
+  const params = new URLSearchParams(location.search);
+  let show = params.get('show') ?? 'all';
+  if (!showBtns.some((b) => b.dataset.show === show)) show = 'all';
+  sortSel.value = params.get('sort') === 'name' ? 'name' : 'died';
+  controls.hidden = false;
+
+  const matches = (c: HTMLElement) => {
+    const ok = show === 'all' ? true : show === 'other' ? c.dataset.doctor === 'false' : c.dataset[show] === 'true';
+    const q = find.value.trim().toLowerCase();
+    return ok && (!q || c.dataset.name!.toLowerCase().includes(q));
+  };
+
+  function apply() {
+    showBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.show === show)));
+    const byName = sortSel.value === 'name';
+    let n = 0;
+    document.querySelectorAll<HTMLElement>('[data-era]').forEach((sec) => {
+      const grid = sec.querySelector('.grid')!;
+      const mine = cards.filter((c) => grid.contains(c));
+      mine.sort((a, b) => byName
+        ? a.dataset.name!.localeCompare(b.dataset.name!)
+        : Number(a.dataset.died) - Number(b.dataset.died) || a.dataset.name!.localeCompare(b.dataset.name!));
+      mine.forEach((c) => { c.hidden = !matches(c); grid.append(c); });
+      const visible = mine.filter((c) => !c.hidden).length;
+      n += visible;
+      sec.querySelector<HTMLElement>('[data-none]')!.hidden = visible > 0;
+    });
+    showing.textContent = `Showing ${n} of ${cards.length}`;
+    const p = new URLSearchParams();
+    if (show !== 'all') p.set('show', show);
+    if (byName) p.set('sort', 'name');
+    history.replaceState(null, '', p.size ? `?${p}` : location.pathname);
+  }
+
+  showBtns.forEach((b) => b.addEventListener('click', () => { show = b.dataset.show!; apply(); }));
+  sortSel.addEventListener('change', apply);
+  find.addEventListener('input', apply);
+  apply();
+</script>
+
 <style>
   .page { display: grid; gap: 36px; padding-block: 36px 56px; }
   header { display: grid; gap: 8px; }
-  h1 { font-size: clamp(36px, 6vw, 56px); }
+  h1 { font-size: clamp(34px, 5.6vw, 52px); line-height: 1.08; }
+  .totals { margin: 0; font-family: var(--label); letter-spacing: .06em; color: var(--gold); font-weight: 700; }
   section { display: grid; gap: 14px; }
   .era-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; border-bottom: 2px solid var(--c); padding-bottom: 8px; }
   .era-head h2 { font-size: clamp(24px, 3.2vw, 30px); color: var(--c); }
   .era-head span { font-family: var(--label); letter-spacing: .08em; color: var(--muted); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-  .card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; text-decoration: none; }
+  .era-head .cnt { margin-left: auto; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: 12px; }
+  .card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: start; gap: 2px 14px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; text-decoration: none; }
+  .card[hidden] { display: none; }
   .card:hover { border-color: var(--c); }
-  .yr { grid-row: span 3; font-family: var(--display); color: var(--c); font-variant-numeric: tabular-nums; padding-top: 3px; }
-  .card h3 { font-size: 20px; }
-  .meta { font-size: 14px; color: var(--muted); }
-  .meta b { color: var(--gold); font-weight: 500; }
-  .card p { margin: 4px 0 0; font-size: 15px; }
+  .yr { grid-row: span 2; font-family: var(--display); color: var(--c); font-variant-numeric: tabular-nums; padding-top: 3px; }
+  .card h3 { font-size: 20px; line-height: 1.2; }
+  /* One line, directly under the name; long ones end in "…" and show in full on hover. */
+  .meta { font-size: 14px; line-height: 1.3; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kinds { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .kind { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 78px; height: 22px; padding: 0; font-family: var(--label); font-size: 11.5px; font-weight: 700; line-height: 1; letter-spacing: .06em; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; }
+  .kind.doctor { background: var(--gold-soft); border-color: var(--gold); color: var(--gold); }
+  .kind.saint { border-color: var(--c); color: var(--c); }
+  .card p { grid-column: 1 / -1; margin: 6px 0 0; font-size: 15px; }
+  .none { margin: 0; }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; position: sticky; top: 64px; z-index: 2; }
+  .controls[hidden] { display: none; }
+  .show { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .lbl { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--muted); margin-right: 4px; }
+  .sort { display: flex; align-items: center; gap: 6px; }
+  .sort select { width: auto; padding: 4px 8px; }
+  .find { width: 180px; padding: 4px 10px; }
+  .showing { margin: 0 0 0 auto; font-size: 14px; }
+  @media (max-width: 700px) { .controls { position: static; } .find { flex: 1 1 160px; } .showing { margin-left: 0; } }
 </style>
