@@ -236,7 +236,54 @@
   "role": "Bishop · Cappadocia",
   "summary": "Wrote the Rule that shaped Eastern monastic life, and On the Holy Spirit. Founded hospitals for the poor.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/basil-the-great.png",
+   "download": "/printables/basil-the-great.jpg",
+   "alt": "One-page printable on St. Basil the Great (c. 330–379), Bishop of Caesarea and Doctor of the Church, covering who he was, his major works, why he is important, key themes, his legacy, and the Basiliad, his complex of care for the poor and sick. Includes the line: \"A tree is known by its fruit; a Christian is known by his deeds.\""
+  },
+  "resources": [
+   {
+    "title": "On the Holy Spirit",
+    "url": "https://www.newadvent.org/fathers/3203.htm",
+    "source": "New Advent",
+    "note": "His defense of the full divinity of the Holy Spirit."
+   },
+   {
+    "title": "Hexaemeron",
+    "url": "https://www.newadvent.org/fathers/3201.htm",
+    "source": "New Advent",
+    "note": "Homilies on the six days of creation."
+   },
+   {
+    "title": "Letters",
+    "url": "https://www.newadvent.org/fathers/3202.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Works of St. Basil",
+    "url": "https://ccel.org/ccel/basil",
+    "source": "Christian Classics Ethereal Library"
+   },
+   {
+    "title": "Pope Benedict XVI on St. Basil the Great (I)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070704.html",
+    "source": "Vatican",
+    "note": "The first of two general audiences on his life and work."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Basil the Great (II)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070801.html",
+    "source": "Vatican",
+    "note": "The second audience, on his teaching and his care for the poor."
+   },
+   {
+    "title": "St. Basil the Great",
+    "url": "https://www.newadvent.org/cathen/02330b.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "cyril-of-jerusalem",
@@ -247,7 +294,32 @@
   "role": "Bishop · Jerusalem",
   "summary": "His Catechetical Lectures remain a model for forming new Christians, rich on Baptism and the Eucharist.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/cyril-of-jerusalem.png",
+   "download": "/printables/cyril-of-jerusalem.jpg",
+   "alt": "One-page printable on St. Cyril of Jerusalem (c. 313–386), Bishop of Jerusalem and Doctor of the Church, covering who he was, his Catechetical Lectures, why he is important, key themes, and his legacy. Includes the line: \"Let your soul be marked by faith, hope, and love.\""
+  },
+  "resources": [
+   {
+    "title": "Catechetical Lectures",
+    "url": "https://www.newadvent.org/fathers/3101.htm",
+    "source": "New Advent",
+    "note": "His instructions to those preparing for Baptism and to the newly baptized, on the Creed and the sacraments."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Cyril of Jerusalem",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070627.html",
+    "source": "Vatican",
+    "note": "A general audience on his life and his catechesis."
+   },
+   {
+    "title": "St. Cyril of Jerusalem",
+    "url": "https://www.newadvent.org/cathen/04595b.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "gregory-of-nazianzus",
@@ -259,7 +331,44 @@
   "title": "The Theologian",
   "summary": "Five Theological Orations gave the Church its language for the Trinity, affirmed at Constantinople in 381.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/gregory-of-nazianzus.png",
+   "download": "/printables/gregory-of-nazianzus.jpg",
+   "alt": "One-page printable on St. Gregory of Nazianzus (c. 329–390), bishop and Doctor of the Church, called \"The Theologian,\" covering who he was, his major works, why he is important, key themes, and his legacy. Includes the line: \"What has not been assumed has not been healed.\""
+  },
+  "resources": [
+   {
+    "title": "Select Orations",
+    "url": "https://www.newadvent.org/fathers/3102.htm",
+    "source": "New Advent",
+    "note": "Including the five Theological Orations on the Trinity."
+   },
+   {
+    "title": "Letters",
+    "url": "https://www.newadvent.org/fathers/3103.htm",
+    "source": "New Advent",
+    "note": "Including the letters to Cledonius on the full humanity of Christ."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Gregory of Nazianzus (I)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070808.html",
+    "source": "Vatican",
+    "note": "The first of two general audiences on his life and work."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Gregory of Nazianzus (II)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070822.html",
+    "source": "Vatican",
+    "note": "The second audience, on his teaching and prayer."
+   },
+   {
+    "title": "St. Gregory of Nazianzus",
+    "url": "https://www.newadvent.org/cathen/07010b.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "ambrose-of-milan",
@@ -270,7 +379,53 @@
   "role": "Bishop · Milan",
   "summary": "A preacher and hymn writer who baptized Augustine and defended the Church's freedom from imperial control.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/ambrose-of-milan.png",
+   "download": "/printables/ambrose-of-milan.jpg",
+   "alt": "One-page printable on St. Ambrose of Milan (c. 339–397), Bishop of Milan and Doctor of the Church, covering who he was, his major works, why he is important, key themes, and his legacy, including his baptism of St. Augustine. Includes the line: \"Where Peter is, there is the Church.\""
+  },
+  "resources": [
+   {
+    "title": "On the Mysteries",
+    "url": "https://www.newadvent.org/fathers/3405.htm",
+    "source": "New Advent",
+    "note": "His teaching for the newly baptized on Baptism, Confirmation, and the Eucharist."
+   },
+   {
+    "title": "On the Duties of the Clergy",
+    "url": "https://www.newadvent.org/fathers/3401.htm",
+    "source": "New Advent",
+    "note": "His guide to the moral and pastoral life of priests."
+   },
+   {
+    "title": "On the Holy Spirit",
+    "url": "https://www.newadvent.org/fathers/3402.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Letters",
+    "url": "https://www.newadvent.org/fathers/3409.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Works of St. Ambrose",
+    "url": "https://ccel.org/ccel/ambrose",
+    "source": "Christian Classics Ethereal Library"
+   },
+   {
+    "title": "Pope Benedict XVI on St. Ambrose",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20071024.html",
+    "source": "Vatican",
+    "note": "A general audience on his life, his preaching, and his influence on Augustine."
+   },
+   {
+    "title": "St. Ambrose",
+    "url": "https://www.newadvent.org/cathen/01383c.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "john-chrysostom",
@@ -282,7 +437,54 @@
   "title": "Golden Mouth",
   "summary": "The East's greatest preacher. Homilies on Scripture and on care for the poor. A Divine Liturgy bears his name.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/john-chrysostom.png",
+   "download": "/printables/john-chrysostom.jpg",
+   "alt": "One-page printable on St. John Chrysostom (c. 347–407), Archbishop of Constantinople and Doctor of the Church, the \"golden-mouthed\" preacher, covering who he was, his major works, why he is important, key themes, and his legacy. Includes the line: \"If you cannot find Christ in the beggar at the church door, you will not find Him in the chalice.\""
+  },
+  "resources": [
+   {
+    "title": "On the Priesthood",
+    "url": "https://www.newadvent.org/fathers/1922.htm",
+    "source": "New Advent",
+    "note": "On the dignity and burden of the priest's ministry."
+   },
+   {
+    "title": "Homilies on Matthew",
+    "url": "https://www.newadvent.org/fathers/2001.htm",
+    "source": "New Advent",
+    "note": "Homily 50 holds his call to honor Christ in the poor as well as at the altar."
+   },
+   {
+    "title": "Homilies on the Gospel of John",
+    "url": "https://www.newadvent.org/fathers/2401.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Works of St. John Chrysostom",
+    "url": "https://ccel.org/ccel/chrysostom",
+    "source": "Christian Classics Ethereal Library"
+   },
+   {
+    "title": "Pope Benedict XVI on St. John Chrysostom (I)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070919.html",
+    "source": "Vatican",
+    "note": "The first of two general audiences on his life and preaching."
+   },
+   {
+    "title": "Pope Benedict XVI on St. John Chrysostom (II)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070926.html",
+    "source": "Vatican",
+    "note": "The second audience, on his years in Constantinople and his teaching."
+   },
+   {
+    "title": "St. John Chrysostom",
+    "url": "https://www.newadvent.org/cathen/08452b.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "jerome",
@@ -719,7 +921,55 @@
   "woman": false,
   "lay": false,
   "saint": true,
-  "theologian": true
+  "theologian": true,
+  "printable": {
+   "image": "../assets/printables/gregory-of-nyssa.png",
+   "download": "/printables/gregory-of-nyssa.jpg",
+   "alt": "One-page printable on St. Gregory of Nyssa (c. 335–c. 395), Bishop of Nyssa and one of the Cappadocian Fathers, covering who he was, his major works, why he is important, key themes, and his legacy. Includes the line: \"The true vision of the One we seek consists in this: in not seeing, because the One desired transcends all knowledge.\""
+  },
+  "resources": [
+   {
+    "title": "The Great Catechism",
+    "url": "https://www.newadvent.org/fathers/2908.htm",
+    "source": "New Advent",
+    "note": "A summary of Christian doctrine for teachers of the faith."
+   },
+   {
+    "title": "On the Making of Man",
+    "url": "https://www.newadvent.org/fathers/2914.htm",
+    "source": "New Advent",
+    "note": "On the human person as made in God's image."
+   },
+   {
+    "title": "On the Soul and the Resurrection",
+    "url": "https://www.newadvent.org/fathers/2915.htm",
+    "source": "New Advent",
+    "note": "A dialogue with his sister, St. Macrina, on death and eternal life."
+   },
+   {
+    "title": "Letters",
+    "url": "https://www.newadvent.org/fathers/2911.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Pope Benedict XVI on St. Gregory of Nyssa (I)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070829.html",
+    "source": "Vatican",
+    "note": "The first of two general audiences on his life and work."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Gregory of Nyssa (II)",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20070905.html",
+    "source": "Vatican",
+    "note": "The second audience, on the human person and the soul's ascent to God."
+   },
+   {
+    "title": "St. Gregory of Nyssa",
+    "url": "https://www.newadvent.org/cathen/07016a.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "maximus-the-confessor",
