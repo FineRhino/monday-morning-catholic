@@ -12,7 +12,7 @@ import { ERAS } from '../data/eras';
 import { kindsOf } from '../data/teachers';
 
 const doctors = (await getCollection('doctors'))
-  .map((d) => ({ id: d.id, name: d.data.name, died: d.data.died, era: d.data.era, summary: d.data.summary, doctor: kindsOf(d.data).doctor }))
+  .map((d) => ({ id: d.id, name: d.data.name, died: d.data.died, era: d.data.era, summary: d.data.summary, doctor: kindsOf(d.data).doctor, featured: d.data.featured, dates: d.data.dates }))
   .sort((a, b) => a.died - b.died);
 /** Sections with at least one published article; the rest are tagged "coming soon". */
 const liveSections = new Set((await getCollection('articles', (a) => !a.data.draft)).map((a) => a.data.section));
@@ -55,8 +55,8 @@ const liveSections = new Set((await getCollection('articles', (a) => !a.data.dra
     <div class="in">
       <div>
         <div class="label">teachers</div>
-        <h2>Twenty centuries of teachers</h2>
-        <p class="muted">Tap a dot to meet a Doctor of the Church, saint, or theologian. Dots are placed by year of death.</p>
+        <h2>Teachers from Abraham to today</h2>
+        <p class="muted">Tap a dot to meet a figure of Scripture, a Doctor of the Church, a saint, or a theologian. Dots are placed by year of death; the Old Testament, the New Testament, and the Church each have their own scale.</p>
       </div>
       <DoctorsTimeline client:visible doctors={doctors} />
       <div class="legend">{ERAS.map((e) => <span><i class="sw" style={`background:var(--${e.id})`}></i>{e.name}</span>)}</div>

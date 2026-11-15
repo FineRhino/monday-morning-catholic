@@ -20,7 +20,7 @@ Drafts (`draft: true`) appear in `npm run dev` but are left out of the public pa
 | Path | What it holds |
 | --- | --- |
 | `src/content/articles/` | Articles as MDX. The frontmatter sets the section, related Doctors, and Catechism paragraphs. |
-| `src/data/doctors.json` | The Teachers: the 38 Doctors of the Church plus other saints and theologians, loaded as a typed content collection (still named `doctors`). See [Adding a saint or theologian](#adding-a-saint-or-theologian). |
+| `src/data/doctors.json` | The Teachers: figures of Scripture, the 38 Doctors of the Church, and other saints and theologians, loaded as a typed content collection (still named `doctors`). See [Adding a saint or theologian](#adding-a-saint-or-theologian). |
 | `src/data/sections.ts` | Site sections (Believe, Explain, Live, Practices, Notes) and any planned topics shown publicly. |
 | `src/data/book.ts` | The book outline for Believe, Explain, and Live. Used only by the private book notes. |
 | `src/data/prayers.ts`, `verses.ts` | Prayer texts and verses of the day (Douay-Rheims, public domain). |
@@ -86,7 +86,23 @@ Add an entry to `src/data/doctors.json`. Leave out `proclaimed` for anyone who i
 
 - A Doctor has a `proclaimed` year, and always counts as a saint and a theologian.
 - `saint: true` means canonized. Leave it out for Blesseds, Venerables, and others.
-- `era` is one of the four periods in `src/data/eras.ts`: `era1` (to 750), `era2` (750–1500), `era3` (1500–1700), `era4` (1700 on).
+- `era` is one of the periods in `src/data/eras.ts`: `era0` (the Scriptures), `era1` (to 750), `era2` (750–1500), `era3` (1500–1700), `era4` (1700 on).
+
+### Figures of Scripture
+
+People from the Old and New Testaments use `era0`. They get their own first section on the Teachers page. The timeline gives them two parts of its own, Old Testament and New Testament, each with its own scale, before the Church's part from 100 on. Their years are uncertain, so they use a few extra fields:
+
+```json
+{
+  "id": "elijah",
+  "era": "era0",
+  "died": -850,                     // for ordering only; negative is BC
+  "dates": "c. 850 BC",             // shown in place of the year
+  "datesLabel": "Taken up to heaven" // shown in place of "Died"
+}
+```
+
+`"featured": true` shows someone in a large card above the section and first in the previous/next order. Only Jesus Christ uses it.
 
 They appear on the Teachers page, in the timeline (as a ring rather than a filled dot), in the filters and counts, and get their own page with the previous and next arrows. Printables and resource links work the same way as for Doctors.
 

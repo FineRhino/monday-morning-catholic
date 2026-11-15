@@ -12,8 +12,16 @@ const doctors = defineCollection({
   loader: file('src/data/doctors.json'),
   schema: ({ image }) => z.object({
     name: z.string(),
-    era: z.enum(['era1', 'era2', 'era3', 'era4']),
+    /** `era0` is the figures of Scripture, shown in the timeline's Old and New Testament parts. */
+    era: z.enum(['era0', 'era1', 'era2', 'era3', 'era4']),
+    /** Year of death, used for ordering. Negative for BC; approximate for figures of Scripture. */
     died: z.number().int(),
+    /** Shown in place of `died` when the year is uncertain, e.g. "c. 1250 BC" or "1st century". */
+    dates: z.string().optional(),
+    /** Label for the date, when "Died" doesn't fit (Mary's Assumption, Elijah taken up). */
+    datesLabel: z.string().optional(),
+    /** Shown on its own above the section's cards, and first in the previous/next order. Used for Christ. */
+    featured: z.boolean().default(false),
     /** The year the Church proclaimed them a Doctor. Leave out for anyone who isn't one. */
     proclaimed: z.number().int().optional(),
     /** Canonized. Implied for Doctors. */

@@ -6,8 +6,9 @@ import { ERAS } from '../../data/eras';
 import { kindsOf, kindLabels } from '../../data/teachers';
 
 export async function getStaticPaths() {
-  // Same order as the Teachers page: by year of death.
-  const all = (await getCollection('doctors')).sort((a, b) => a.data.died - b.data.died || a.data.name.localeCompare(b.data.name));
+  // Same order as the Teachers page: Christ first, then by year of death.
+  const all = (await getCollection('doctors')).sort((a, b) =>
+    Number(b.data.featured) - Number(a.data.featured) || a.data.died - b.data.died || a.data.name.localeCompare(b.data.name));
   const link = (d?: CollectionEntry<'doctors'>) => d && { id: d.id, name: d.data.name };
   return all.map((d, i) => ({
     params: { id: d.id },
@@ -33,9 +34,9 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
     <a class="label" href="/teachers/">doctors, saints and theologians · {era.name.toLowerCase()}</a>
     <h1>{d.name}</h1>
     <p class="meta">{d.role}{d.title && ` · ${d.title}`}</p>
-    <p class="kinds">{kindLabels(kinds).map((k) => <span class:list={['kind', k.toLowerCase()]}>{k}</span>)}</p>
+    {kindLabels(kinds).length > 0 && <p class="kinds">{kindLabels(kinds).map((k) => <span class:list={['kind', k.toLowerCase()]}>{k}</span>)}</p>}
     <dl>
-      <div><dt>Died</dt><dd>{d.died}</dd></div>
+      <div><dt>{d.datesLabel ?? 'Died'}</dt><dd>{d.dates ?? d.died}</dd></div>
       {d.proclaimed !== undefined && <div><dt>Proclaimed a Doctor</dt><dd>{d.proclaimed}</dd></div>}
       {d.proclaimed !== undefined && <div><dt>Years between</dt><dd>{d.proclaimed - d.died}</dd></div>}
     </dl>

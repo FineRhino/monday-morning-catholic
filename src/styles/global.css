@@ -1,8 +1,8 @@
-/* Design tokens shared by every page. Era colors borrow liturgical vestment colors. */
+/* Design tokens shared by every page. Era colors borrow liturgical vestment colors; era0 (the Scriptures) is parchment brown. */
 :root {
   --bg: #F5F6F9; --surface: #FFFFFF; --sunk: #ECEEF3; --ink: #1B2340; --muted: #5A6178;
   --rule: #D9DCE6; --gold: #94701A; --gold-soft: #F3EBD6;
-  --era1: #6B3FA0; --era2: #1F6E5A; --era3: #A3322A; --era4: #2F5DA8;
+  --era0: #8A5A2B; --era1: #6B3FA0; --era2: #1F6E5A; --era3: #A3322A; --era4: #2F5DA8;
   --display: "Alegreya", Georgia, "Times New Roman", serif;
   --body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
   --label: "Alegreya Sans SC", "Alegreya Sans", system-ui, sans-serif;
@@ -12,7 +12,7 @@
   :root {
     --bg: #11141D; --surface: #181C28; --sunk: #141824; --ink: #E7E9F0; --muted: #A3A8B9;
     --rule: #2B3144; --gold: #D8B55A; --gold-soft: #2C2715;
-    --era1: #B694E6; --era2: #62C3A5; --era3: #E8877C; --era4: #86A9EE;
+    --era0: #E0AC78; --era1: #B694E6; --era2: #62C3A5; --era3: #E8877C; --era4: #86A9EE;
     color-scheme: dark;
   }
 }

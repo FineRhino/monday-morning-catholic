@@ -17,11 +17,11 @@ const countLine = (c: ReturnType<typeof countKinds>) =>
     <header>
       <div class="label">teachers</div>
       <h1>Doctors, Saints and Theologians of the Church</h1>
-      <p class="muted prose">Teachers of the faith across twenty centuries. The Church has named {total.doctors} saints Doctors of the Church for the lasting value of their teaching; alongside them are other saints and theologians whose work still guides believers.</p>
+      <p class="muted prose">Teachers of the faith from the Scriptures to today. It begins with Christ and the men and women of the Old and New Testaments. The Church has named {total.doctors} saints Doctors of the Church for the lasting value of their teaching; alongside them are other saints and theologians whose work still guides believers.</p>
       <p class="totals">{countLine(total)}</p>
     </header>
 
-    <DoctorsTimeline client:visible doctors={people.map((p) => ({ id: p.id, name: p.name, died: p.died, era: p.era, summary: p.summary, doctor: p.kinds.doctor }))} />
+    <DoctorsTimeline client:visible doctors={people.map((p) => ({ id: p.id, name: p.name, died: p.died, era: p.era, summary: p.summary, doctor: p.kinds.doctor, featured: p.featured, dates: p.dates }))} />
 
     <div class="controls" data-controls hidden>
       <div class="show" role="group" aria-label="Show">
@@ -43,15 +43,24 @@ const countLine = (c: ReturnType<typeof countKinds>) =>
     </div>
 
     {ERAS.map((e) => {
-      const list = people.filter((d) => d.era === e.id);
+      const list = people.filter((d) => d.era === e.id && !d.featured);
+      const featured = people.filter((d) => d.era === e.id && d.featured);
       return (
         <section style={`--c: var(--${e.id})`} data-era>
           <div class="era-head"><h2>{e.name}</h2><span>{e.span}</span><span class="cnt">{countLine(countKinds(list.map((p) => p.kinds)))}</span></div>
+          {featured.map((d) => (
+            <a class="featured" href={`/teachers/${d.id}/`}>
+              <span class="ft-label">{d.title}</span>
+              <h3>{d.name}</h3>
+              <span class="meta">{d.role}</span>
+              <p>{d.summary}</p>
+            </a>
+          ))}
           <div class="grid">
             {list.map((d) => (
               <a class="card" href={`/teachers/${d.id}/`} data-card data-name={d.name} data-died={d.died}
                 data-doctor={String(d.kinds.doctor)} data-saint={String(d.kinds.saint)} data-theologian={String(d.kinds.theologian)}>
-                <span class="yr">{d.died}</span>
+                <span class="yr">{d.dates ?? d.died}</span>
                 <h3>{d.name}</h3>
                 <span class="meta" title={d.title ? `${d.role} · ${d.title}` : d.role}>{d.role}{d.title && ` · ${d.title}`}</span>
                 <span class="kinds">{kindLabels(d.kinds).map((k) => <span class:list={['kind', k.toLowerCase()]}>{k}</span>)}</span>
@@ -129,7 +138,14 @@ const countLine = (c: ReturnType<typeof countKinds>) =>
   .card { display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: start; gap: 2px 14px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; text-decoration: none; }
   .card[hidden] { display: none; }
   .card:hover { border-color: var(--c); }
-  .yr { grid-row: span 2; font-family: var(--display); color: var(--c); font-variant-numeric: tabular-nums; padding-top: 3px; }
+  .yr { grid-row: span 2; font-family: var(--display); color: var(--c); font-variant-numeric: tabular-nums; padding-top: 3px; white-space: nowrap; }
+  /* Christ, above the cards of the Scriptures section. */
+  .featured { display: grid; gap: 4px; padding: 20px 22px; background: var(--surface); border: 1px solid var(--c); border-top-width: 4px; border-radius: 8px; text-decoration: none; }
+  .featured:hover { background: var(--gold-soft); }
+  .ft-label { font-family: var(--label); font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: lowercase; color: var(--c); }
+  .featured h3 { font-size: clamp(26px, 3.6vw, 34px); line-height: 1.1; }
+  .featured .meta { font-size: 15px; white-space: normal; }
+  .featured p { margin: 6px 0 0; max-width: 72ch; font-size: 16.5px; }
   .card h3 { font-size: 20px; line-height: 1.2; }
   /* One line, directly under the name; long ones end in "…" and show in full on hover. */
   .meta { font-size: 14px; line-height: 1.3; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
