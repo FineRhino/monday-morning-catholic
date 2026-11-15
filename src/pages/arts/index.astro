@@ -112,7 +112,11 @@ const groups: { id: string; heading: string; sub: string; intro: string; people:
   .yrs { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); margin-left: 4px; }
   .body p { margin: 0; font-size: 15px; color: var(--muted); }
   .links { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 3px; font-size: 13.5px; }
-  .links a::before { content: '▸ '; color: var(--gold); }
+  /* No underline at rest; the gold arrow marks a link. The underline returns on hover and keyboard focus. */
+  .links a { text-decoration: none; }
+  .links a:hover, .links a:focus-visible { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
+  .links a::before { content: '▸ '; color: var(--gold); display: inline-block; margin-right: 2px; text-decoration: none; }
   .body .credit { margin-top: 6px; font-size: 12px; }
-  .credit a { color: inherit; }
+  .credit a { color: inherit; text-decoration: none; }
+  .credit a:hover, .credit a:focus-visible { text-decoration: underline; }
 </style>
