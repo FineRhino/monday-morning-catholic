@@ -110,9 +110,16 @@ const related = await getCollection('articles', (a) => (import.meta.env.DEV || !
   dd { margin: 0; font-family: var(--display); font-size: 30px; font-variant-numeric: tabular-nums; }
   .summary { font-size: 19px; }
   h2 { font-size: 22px; }
-  .extras { display: grid; grid-template-columns: minmax(0, 560px) minmax(240px, 360px); gap: 24px; align-items: start; width: 100%; }
-  @media (max-width: 860px) { .extras { grid-template-columns: minmax(0, 560px); } }
+  .extras { display: grid; grid-template-columns: minmax(0, 560px) minmax(240px, 360px); column-gap: 24px; row-gap: 10px; align-items: start; width: 100%; }
   .printable { display: grid; gap: 10px; width: 100%; }
+  /* Side by side: the printable's heading, image, and download link sit in the grid's three rows,
+     so the Resources box starts level with the top of the image, not the heading. */
+  @media (min-width: 861px) {
+    .extras:has(.printable) { grid-template-rows: auto auto auto; }
+    .printable { grid-column: 1; grid-row: 1 / span 3; grid-template-rows: subgrid; }
+    .printable + .resources { grid-column: 2; grid-row: 2 / span 2; }
+  }
+  @media (max-width: 860px) { .extras { grid-template-columns: minmax(0, 560px); row-gap: 24px; } }
   .printable img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 8px; }
   .printable p { margin: 0; }
   .resources { position: sticky; top: 80px; }
