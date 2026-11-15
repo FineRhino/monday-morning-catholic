@@ -1,21 +1,22 @@
 ---
 import { Picture } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
-import { MUSIC_QUOTES, MUSICIANS, ARTISTS, WRITERS, type Maker } from '../../data/arts';
+import { MUSIC_QUOTES, MUSICIANS, ARTISTS, WRITERS, MOVIES, type Maker } from '../../data/arts';
 
-const groups: { id: string; heading: string; sub: string; intro: string; people: Maker[] }[] = [
+/** `portrait`: writers' pictures are mostly tall portraits, so their tiles use a squarer 4:3 frame. */
+const groups: { id: string; heading: string; sub: string; intro: string; people: Maker[]; portrait?: boolean }[] = [
   { id: 'art', heading: 'Art', sub: 'Artists', intro: 'Painters and sculptors whose work makes the faith visible.', people: ARTISTS },
-  { id: 'literature', heading: 'Literature', sub: 'Writers', intro: 'Poets and authors whose books carry the faith.', people: WRITERS },
+  { id: 'literature', heading: 'Literature', sub: 'Writers', intro: 'Saints, poets, and novelists whose books carry the faith, in order of birth.', people: WRITERS, portrait: true },
 ];
 ---
-<Base title="Music, Art and Literature" description="What the saints say about music, and Catholic musicians, artists, and writers worth knowing.">
+<Base title="Music, Art and Literature" description="What the saints say about music, and Catholic musicians, artists, writers, and films worth knowing.">
   <div class="gut"><div class="in page">
     <header>
       <div class="label">music, art and literature</div>
       <h1>Music, Art and Literature</h1>
-      <p class="muted prose">Beauty that points to God: the saints on music, and musicians, artists, and writers whose work carries the faith.</p>
+      <p class="muted prose">Beauty that points to God: the saints on music, and musicians, artists, writers, and films that carry the faith.</p>
       <nav class="jump" aria-label="On this page">
-        <a href="#music">Music</a><a href="#art">Art</a><a href="#literature">Literature</a>
+        <a href="#music">Music</a><a href="#art">Art</a><a href="#literature">Literature</a><a href="#film">Film</a>
       </nav>
     </header>
 
@@ -59,22 +60,63 @@ const groups: { id: string; heading: string; sub: string; intro: string; people:
         <ul class="tiles">
           {g.people.map((m) => (
             <li>
-              <div class="pic still">
+              <div class:list={['pic', 'still', { portrait: g.portrait, contain: m.contain }]} style={[m.focus && `--focus: ${m.focus}`, m.contain && `--matte: ${m.contain}`].filter(Boolean).join('; ') || undefined}>
                 <Picture src={m.image} alt={m.imageAlt} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[360, 640]} sizes="(max-width: 600px) calc(100vw - 32px), 360px" loading="lazy" />
               </div>
               <div class="body">
-                <h4>{m.name} <span class="yrs">{m.years}</span></h4>
+                <h4>{m.name}</h4>
+                <p class="yrs">{m.years}</p>
                 <p>{m.about}</p>
                 <ul class="links">
                   {m.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
                 </ul>
-                <p class="credit">Image: <a href={m.credit.url}>{m.credit.label}</a> (public domain)</p>
+                <p class="credit">Image: <a href={m.credit.url}>{m.credit.label}</a> ({m.credit.license ?? 'public domain'})</p>
               </div>
             </li>
           ))}
         </ul>
       </section>
     ))}
+
+    <section id="film" class="part" aria-labelledby="film-h">
+      <h2 id="film-h">Film</h2>
+      <h3 class="sub">Movies</h3>
+      <p class="intro muted">Films that tell the stories of Christ, the saints, and the martyrs, and take faith seriously, in order of release.</p>
+      <ul class="tiles">
+        {MOVIES.map((m) => {
+          const watch = m.trailer && `https://www.youtube.com/watch?v=${m.trailer}`;
+          const label = m.videoLabel ?? 'Official trailer';
+          const thumb = m.thumb ? 'hqdefault' : 'maxresdefault';
+          return (
+            <li>
+              {watch ? (
+                <a class="pic" href={watch} aria-label={`${label}: ${m.title}, on YouTube`}>
+                  <img class:list={{ letterboxed: m.thumb === 'letterboxed' }} src={`https://i.ytimg.com/vi/${m.trailer}/${thumb}.jpg`} alt="" width="1280" height="720" loading="lazy" referrerpolicy="no-referrer" />
+                  <span class="play" aria-hidden="true">▶</span>
+                </a>
+              ) : (
+                <div class="pic titlecard" aria-hidden="true">
+                  <svg width="14" height="18" viewBox="5 2 16 22"><rect x="11" y="2" width="4" height="22" rx="1" /><rect x="5" y="8" width="16" height="4" rx="1" /></svg>
+                  <span class="tc-title">{m.title}</span>
+                  <span class="tc-year">{m.year}</span>
+                </div>
+              )}
+              <div class="body">
+                <h4>{m.title}</h4>
+                <p class="yrs">{m.year}</p>
+                <p class="dir">Directed by {m.director}{m.kind && ` · ${m.kind}`}</p>
+                <p>{m.about}</p>
+                <ul class="links">
+                  {watch && <li><a href={watch}>{label}</a></li>}
+                  {m.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
+                </ul>
+                {watch && <p class="credit">Video: {m.trailerFrom}, on YouTube</p>}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   </div></div>
 </Base>
 
@@ -104,12 +146,24 @@ const groups: { id: string; heading: string; sub: string; intro: string; people:
   .tiles > li { display: grid; grid-template-rows: auto 1fr; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
   .pic { position: relative; display: block; aspect-ratio: 16 / 9; background: var(--sunk); overflow: hidden; }
   .pic img, .pic :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .pic.still :global(img) { object-position: center 25%; }
+  .pic.still :global(img) { object-position: var(--focus, center 25%); }
+  .pic.portrait { aspect-ratio: 4 / 3; }
+  .pic.portrait :global(img) { object-position: var(--focus, 50% 20%); }
+  .pic.contain { background: var(--matte); }
+  .pic.contain :global(img) { object-fit: contain; }
+  /* Standard-size YouTube thumbnails of widescreen trailers have black bars; zoom past them. */
+  .pic img.letterboxed { transform: scale(1.36); }
+  /* Films with no official video online: the title, set like a title card. */
+  .titlecard { display: grid; place-content: center; justify-items: center; gap: 6px; padding: 16px; text-align: center; background: linear-gradient(160deg, #1c2236, #0f1320); color: #f3ead2; }
+  .titlecard svg { fill: var(--gold); opacity: .9; margin-bottom: 2px; }
+  .tc-title { font-family: var(--display); font-size: 22px; line-height: 1.15; text-wrap: balance; }
+  .tc-year { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .12em; color: #d8b55a; }
   .play { position: absolute; right: 10px; bottom: 10px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: rgb(0 0 0 / .65); color: #fff; font-size: 13px; padding-left: 2px; transition: background .15s; }
   a.pic:hover .play { background: var(--gold); }
   .body { display: grid; gap: 6px; align-content: start; padding: 14px 16px 16px; }
   .body h4 { margin: 0; font-family: var(--display); font-size: 21px; line-height: 1.2; }
-  .yrs { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); margin-left: 4px; }
+  /* Dates (life dates, or a movie's year): their own line, right under the name, on every tile. */
+  .body .yrs { margin: -4px 0 0; font-family: var(--label); font-size: 13px; font-weight: 700; line-height: 1.3; letter-spacing: .06em; color: var(--gold); }
   .body p { margin: 0; font-size: 15px; color: var(--muted); }
   .links { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 3px; font-size: 13.5px; }
   /* No underline at rest; the gold arrow marks a link. The underline returns on hover and keyboard focus. */
@@ -117,6 +171,7 @@ const groups: { id: string; heading: string; sub: string; intro: string; people:
   .links a:hover, .links a:focus-visible { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
   .links a::before { content: '▸ '; color: var(--gold); display: inline-block; margin-right: 2px; text-decoration: none; }
   .body .credit { margin-top: 6px; font-size: 12px; }
+  .body .dir { font-size: 14px; margin-top: -4px; }
   .credit a { color: inherit; text-decoration: none; }
   .credit a:hover, .credit a:focus-visible { text-decoration: underline; }
 </style>
