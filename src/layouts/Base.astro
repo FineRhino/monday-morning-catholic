@@ -12,6 +12,7 @@ const path = Astro.url.pathname;
 const nav = [
   ...SECTIONS.filter((s) => s.id !== 'notes').map((s) => ({ href: `/${s.id}/`, label: s.name })),
   { href: '/prayers/', label: 'Prayers' },
+  { href: '/music/', label: 'Music' },
   { href: '/teachers/', label: 'Teachers' },
   { href: '/resources/', label: 'Resources' },
   { href: '/notes/', label: 'Notes' },

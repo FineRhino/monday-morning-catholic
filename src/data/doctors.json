@@ -172,7 +172,60 @@
   "title": "Harp of the Holy Spirit",
   "summary": "Taught doctrine through hymns and poetry, with a deep devotion to Mary.",
   "woman": false,
-  "lay": false
+  "lay": false,
+  "printable": {
+   "image": "../assets/printables/ephrem-the-syrian.png",
+   "download": "/printables/ephrem-the-syrian.jpg",
+   "alt": "One-page printable on St. Ephrem the Syrian (c. 306–373), deacon, theologian, poet, and Doctor of the Church, covering his early life and vocation, his hymns and poetry, his teaching and works, key themes and virtues, and lasting legacy. Includes his traditional title: \"The harp of the Holy Spirit.\""
+  },
+  "resources": [
+   {
+    "title": "Hymns on the Nativity",
+    "url": "https://www.newadvent.org/fathers/3703.htm",
+    "source": "New Advent",
+    "note": "His hymns on the birth of Christ and on Mary."
+   },
+   {
+    "title": "Nisibene Hymns",
+    "url": "https://www.newadvent.org/fathers/3702.htm",
+    "source": "New Advent",
+    "note": "Hymns from his years in Nisibis, many on death and the Resurrection."
+   },
+   {
+    "title": "The Pearl",
+    "url": "https://www.newadvent.org/fathers/3705.htm",
+    "source": "New Advent",
+    "note": "Seven hymns on the faith, using the pearl as an image of Christ."
+   },
+   {
+    "title": "Homily on Our Lord",
+    "url": "https://www.newadvent.org/fathers/3706.htm",
+    "source": "New Advent"
+   },
+   {
+    "title": "Works of St. Ephrem",
+    "url": "https://ccel.org/ccel/ephraim",
+    "source": "Christian Classics Ethereal Library"
+   },
+   {
+    "title": "Principi Apostolorum Petro",
+    "url": "https://www.vatican.va/content/benedict-xv/en/encyclicals/documents/hf_ben-xv_enc_05101920_principi-apostolorum-petro.html",
+    "source": "Vatican",
+    "note": "Pope Benedict XV's 1920 encyclical declaring him a Doctor of the Church."
+   },
+   {
+    "title": "Pope Benedict XVI on St. Ephrem",
+    "url": "https://www.vatican.va/content/benedict-xvi/en/audiences/2007/documents/hf_ben-xvi_aud_20071128.html",
+    "source": "Vatican",
+    "note": "A general audience on his life and his theology in poetry."
+   },
+   {
+    "title": "St. Ephraem",
+    "url": "https://www.newadvent.org/cathen/05498a.htm",
+    "source": "Catholic Encyclopedia (New Advent)",
+    "note": "His life and writings."
+   }
+  ]
  },
  {
   "id": "basil-the-great",

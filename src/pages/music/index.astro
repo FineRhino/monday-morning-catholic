@@ -1,0 +1,75 @@
+---
+import Base from '../../layouts/Base.astro';
+import { MUSIC_QUOTES, ARTISTS } from '../../data/music';
+---
+<Base title="Music" description="What the saints say about music, and Catholic and Christian artists worth hearing.">
+  <div class="gut"><div class="in page">
+    <header>
+      <div class="label">music</div>
+      <h1>Music</h1>
+      <p class="muted prose">The saints on why music matters to God, and artists whose songs carry the faith.</p>
+    </header>
+
+    <section aria-labelledby="saints">
+      <h2 id="saints">The saints on music</h2>
+      <div class="quotes">
+        {MUSIC_QUOTES.map((q) => (
+          <figure>
+            <blockquote>{q.text}</blockquote>
+            <figcaption><b>{q.who}</b> <span>{q.source}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section aria-labelledby="artists">
+      <h2 id="artists">Artists</h2>
+      <ul class="artists">
+        {ARTISTS.map((a) => (
+          <li>
+            <a class="pic" href={`https://www.youtube.com/watch?v=${a.featured.videoId}`} aria-label={`Watch ${a.featured.title} by ${a.name} on YouTube`}>
+              <img src={`https://i.ytimg.com/vi/${a.featured.videoId}/maxresdefault.jpg`} alt="" width="1280" height="720" loading="lazy" referrerpolicy="no-referrer" />
+              <span class="play" aria-hidden="true">▶</span>
+            </a>
+            <div class="body">
+              <h3>{a.name}</h3>
+              <p>{a.about}</p>
+              <ul class="links">
+                {a.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div></div>
+</Base>
+
+<style>
+  .page { display: grid; gap: 32px; padding-block: 36px 56px; }
+  header { display: grid; gap: 8px; }
+  h1 { font-size: clamp(36px, 6vw, 56px); }
+  section { display: grid; gap: 14px; }
+  section > h2 { font-size: 26px; }
+
+  .quotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 12px; }
+  figure { margin: 0; display: grid; gap: 10px; align-content: space-between; padding: 18px 20px; background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--gold); border-radius: 8px; }
+  blockquote { margin: 0; font-family: var(--display); font-style: italic; font-size: 19px; line-height: 1.45; }
+  blockquote::before { content: '“'; }
+  blockquote::after { content: '”'; }
+  figcaption { font-size: 14.5px; display: grid; gap: 1px; }
+  figcaption b { font-family: var(--label); letter-spacing: .06em; color: var(--gold); }
+  figcaption span { color: var(--muted); }
+
+  .artists { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .artists > li { display: grid; grid-template-rows: auto 1fr; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+  .pic { position: relative; display: block; aspect-ratio: 16 / 9; background: var(--sunk); }
+  .pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .play { position: absolute; right: 10px; bottom: 10px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: rgb(0 0 0 / .65); color: #fff; font-size: 13px; padding-left: 2px; transition: background .15s; }
+  .pic:hover .play { background: var(--gold); }
+  .body { display: grid; gap: 6px; align-content: start; padding: 14px 16px 16px; }
+  .body h3 { font-size: 21px; }
+  .body p { margin: 0; font-size: 15px; color: var(--muted); }
+  .links { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 3px; font-size: 13.5px; }
+  .links a::before { content: '▸ '; color: var(--gold); }
+</style>
