@@ -7,6 +7,7 @@ import { getCollection } from 'astro:content';
 import { Picture } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { WEBSITES } from '../../data/websites';
+import { PODCASTS } from '../../data/podcasts';
 
 const printables = (await getCollection('doctors', (d) => !!d.data.printable))
   .sort((a, b) => a.data.died - b.data.died)
@@ -53,6 +54,19 @@ const printables = (await getCollection('doctors', (d) => !!d.data.printable))
             <a href={w.url} rel="noopener">{w.name}</a>
             <span class="host">{new URL(w.url).hostname.replace(/^www\./, '')}</span>
             <p>{w.description}</p>
+          </li>
+        ))}
+      </ul>
+    </details>
+
+    <details class="group" open>
+      <summary><h2>Podcasts</h2><span class="count">{PODCASTS.length}</span></summary>
+      <ul class="sites">
+        {PODCASTS.map((p) => (
+          <li>
+            <a href={p.url} rel="noopener">{p.name}</a>
+            <span class="host">{new URL(p.url).hostname.replace(/^www\./, '')}</span>
+            <p>{p.description}</p>
           </li>
         ))}
       </ul>
