@@ -1,21 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import DailyRhythm from '../components/DailyRhythm.svelte';
 import PrayerList from '../components/PrayerList.svelte';
 import PrayerBook from '../components/PrayerBook.svelte';
 import SavedPassages from '../components/SavedPassages.svelte';
+import Journal from '../components/Journal.svelte';
 import TodayReadings from '../components/TodayReadings.astro';
-import DoctorsTimeline from '../components/DoctorsTimeline.svelte';
-import { SECTIONS } from '../data/sections';
-import { ERAS } from '../data/eras';
-import { kindsOf } from '../data/teachers';
-
-const doctors = (await getCollection('doctors'))
-  .map((d) => ({ id: d.id, name: d.data.name, died: d.data.died, era: d.data.era, summary: d.data.summary, doctor: kindsOf(d.data).doctor, featured: d.data.featured, dates: d.data.dates }))
-  .sort((a, b) => a.died - b.died);
-/** Sections with at least one published article; the rest are tagged "coming soon". */
-const liveSections = new Set((await getCollection('articles', (a) => !a.data.draft)).map((a) => a.data.section));
 ---
 <Base>
   <section class="today gut">
@@ -31,37 +21,20 @@ const liveSections = new Set((await getCollection('articles', (a) => !a.data.dra
     </div>
   </section>
 
-  <section class="dash gut" aria-label="My dashboard">
+  <section class="dash gut" aria-labelledby="workbook">
     <div class="in">
+      <div class="wb-head">
+        <div class="label">workbook</div>
+        <h2 id="workbook">My spiritual workbook</h2>
+        <p class="muted">Your notes, the people you're praying for, and the prayers and passages you've saved. Everything stays on this device, or in your account if you sign in.</p>
+      </div>
+      <div class="journal"><Journal client:only="svelte" /></div>
       <PrayerList client:only="svelte" />
       <PrayerBook client:only="svelte" />
       <SavedPassages client:only="svelte" />
     </div>
   </section>
 
-  <section class="explore gut">
-    <div class="in">
-      <div><div class="label">explore</div><h2>Theology and practice</h2></div>
-      <div class="sec-grid">
-        {SECTIONS.map((s) => (
-          <a class="sec" href={`/${s.id}/`}><h3>{s.name}{!liveSections.has(s.id) && <span class="soon">coming soon</span>}</h3><p>{s.tagline}</p></a>
-        ))}
-        <a class="sec" href="/teachers/"><h3>Teachers</h3><p>Doctors of the Church, saints, and theologians, with key ideas.</p></a>
-      </div>
-    </div>
-  </section>
-
-  <section class="tl gut">
-    <div class="in">
-      <div>
-        <div class="label">teachers</div>
-        <h2>Teachers from Abraham to today</h2>
-        <p class="muted">Tap a dot to meet a figure of Scripture, a Doctor of the Church, a saint, or a theologian. Dots are placed by year of death; the Old Testament, the New Testament, and the Church each have their own scale.</p>
-      </div>
-      <DoctorsTimeline client:visible doctors={doctors} />
-      <div class="legend">{ERAS.map((e) => <span><i class="sw" style={`background:var(--${e.id})`}></i>{e.name}</span>)}</div>
-    </div>
-  </section>
 </Base>
 
 <style>
@@ -72,22 +45,12 @@ const liveSections = new Set((await getCollection('articles', (a) => !a.data.dra
   .greet { display: grid; gap: 14px; justify-items: start; }
   h1 { font-size: clamp(34px, 5.4vw, 54px); line-height: 1.05; }
   h2 { font-size: clamp(26px, 3.6vw, 34px); }
-  .dash { padding-block: 8px 40px; }
+  .dash { padding-block: 24px 56px; }
+  .wb-head { grid-column: 1 / -1; display: grid; gap: 6px; }
+  .wb-head p { margin: 0; max-width: 66ch; }
+  .journal { grid-column: 1 / -1; }
   .dash .in { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
-  .explore { padding-block: 32px; background: var(--surface); border-block: 1px solid var(--rule); }
-  .explore .in, .tl .in { display: grid; gap: 18px; }
-  .sec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  a.sec { display: grid; gap: 4px; text-decoration: none; padding: 16px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); transition: transform .15s, border-color .15s; }
-  a.sec:hover { transform: translateY(-2px); border-color: var(--gold); }
-  a.sec h3 { font-size: 20px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
-  a.sec .soon { font-family: var(--label); font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--gold); }
-  a.sec p { margin: 0; font-size: 15px; color: var(--muted); }
-  .tl { padding-block: 36px 56px; }
-  .tl p { margin: 6px 0 0; max-width: 66ch; }
-  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--muted); }
-  .legend span { display: inline-flex; align-items: center; gap: 6px; }
-  .sw { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   @media (max-width: 980px) { .dash .in { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 860px) { .today .in { grid-template-columns: minmax(0, 1fr); } .sec-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 640px) { .dash .in, .sec-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 860px) { .today .in { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 640px) { .dash .in { grid-template-columns: minmax(0, 1fr); } }
 </style>

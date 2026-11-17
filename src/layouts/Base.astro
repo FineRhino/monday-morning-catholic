@@ -18,7 +18,6 @@ const nav = [
   { href: '/arts/', label: 'Music, Art and Literature' },
   { href: '/teachers/', label: 'Teachers' },
   { href: '/resources/', label: 'Resources' },
-  { href: '/notes/', label: 'Notes' },
 ];
 ---
 <!doctype html>
@@ -42,10 +41,13 @@ const nav = [
           Monday Morning Catholic
         </a>
         <div class="links">
-          <div class="menu" data-menu>
-            <button type="button" class:list={['menu-btn', { on: faithOn }]} aria-expanded="false" aria-controls="faith-menu">The Faith <span class="caret" aria-hidden="true">▾</span></button>
-            <div class="sub" id="faith-menu">
-              {faith.map((f) => <a href={f.href} class:list={{ on: path.startsWith(f.href) }}>{f.label}</a>)}
+          <a href="/" class:list={{ on: path === '/' }}>Home</a>
+          <div class="item"><Sep />
+            <div class="menu" data-menu>
+              <button type="button" class:list={['menu-btn', { on: faithOn }]} aria-expanded="false" aria-controls="faith-menu">The Faith <span class="caret" aria-hidden="true">▾</span></button>
+              <div class="sub" id="faith-menu">
+                {faith.map((f) => <a href={f.href} class:list={{ on: path.startsWith(f.href) }}>{f.label}</a>)}
+              </div>
             </div>
           </div>
           {nav.map((n) => <span class="item"><Sep /><a href={n.href} class:list={{ on: path.startsWith(n.href) }}>{n.label}</a></span>)}

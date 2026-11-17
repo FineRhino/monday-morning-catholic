@@ -49,7 +49,7 @@
     void run(deleteAccount);
   }
 
-  const counts = $derived(`${store.prayerList.length} on your prayer list, ${store.savedPrayers.length} saved prayers, ${store.passages.length} saved passages`);
+  const counts = $derived(`${store.prayerList.length} on your prayer list, ${store.savedPrayers.length} saved prayers, ${store.passages.length} saved passages, ${store.notes.length} ${store.notes.length === 1 ? 'note' : 'notes'}`);
 </script>
 
 {#if !supabase}

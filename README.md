@@ -140,9 +140,9 @@ Any static host works. On Cloudflare Pages or Netlify, use build command `npm ru
 
 ## Accounts (Supabase)
 
-Visitors can use the site without an account; their prayer list, saved prayers, passages, and daily rhythm stay in the browser. Signing in with an emailed code keeps the same data in [Supabase](https://supabase.com) so it follows them to any device. On first sign-in, anything saved in that browser is copied into the account.
+Visitors can use the site without an account; their notes, prayer list, saved prayers, passages, and daily rhythm stay in the browser. Signing in with an emailed code keeps the same data in [Supabase](https://supabase.com) so it follows them to any device. On first sign-in, anything saved in that browser is copied into the account.
 
-- `supabase/schema.sql` creates the tables, the row level security rules (each person sees only their own rows), and the function behind "Delete my account".
+- `supabase/schema.sql` creates the tables, the row level security rules (each person sees only their own rows), and the function behind "Delete my account". `supabase/add-journal-notes.sql` adds the notes table to a project created before it existed.
 - `src/lib/store.svelte.ts` keeps the data and writes changes to Supabase when someone is signed in.
 - `src/pages/account/` is the sign-in, sign-out, download, and delete page, plus the privacy note.
 

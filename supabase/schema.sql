@@ -42,12 +42,23 @@ create table public.rhythm_steps (
   primary key (user_id, day, step)
 );
 
+-- Journal entries in "My notes" on the home page.
+create table public.journal_notes (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  body text not null check (char_length(body) between 1 and 5000),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz
+);
+create index journal_notes_user_id_idx on public.journal_notes (user_id);
+
 -- Row level security: signed-in visitors see and change only their own rows.
 -- Signed-out visitors (the anon role) get nothing.
 alter table public.prayer_list enable row level security;
 alter table public.saved_prayers enable row level security;
 alter table public.passages enable row level security;
 alter table public.rhythm_steps enable row level security;
+alter table public.journal_notes enable row level security;
 
 create policy "Own rows only" on public.prayer_list for all to authenticated
   using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
@@ -57,9 +68,11 @@ create policy "Own rows only" on public.passages for all to authenticated
   using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 create policy "Own rows only" on public.rhythm_steps for all to authenticated
   using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "Own rows only" on public.journal_notes for all to authenticated
+  using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
 
-revoke all on public.prayer_list, public.saved_prayers, public.passages, public.rhythm_steps from anon;
-grant select, insert, update, delete on public.prayer_list, public.saved_prayers, public.passages, public.rhythm_steps to authenticated;
+revoke all on public.prayer_list, public.saved_prayers, public.passages, public.rhythm_steps, public.journal_notes from anon;
+grant select, insert, update, delete on public.prayer_list, public.saved_prayers, public.passages, public.rhythm_steps, public.journal_notes to authenticated;
 
 -- Lets a signed-in visitor delete their own account. Their rows go with it.
 create or replace function public.delete_my_account()

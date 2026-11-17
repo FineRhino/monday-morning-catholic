@@ -1,5 +1,5 @@
 /**
- * Personal data: prayer list, saved prayers, saved passages, and today's rhythm.
+ * Personal data: prayer list, saved prayers, saved passages, notes, and today's rhythm.
  *
  * Signed out, everything stays in this browser's localStorage, as before.
  * Signed in, the same data is kept in Supabase so it follows the visitor to any device.
@@ -12,11 +12,14 @@ import { supabase } from './supabase';
 
 export interface Person { id: string; name: string; intention?: string; prayedOn?: string; }
 export interface Passage { id: string; ref: string; text?: string; note?: string; savedAt: string; }
+/** A journal entry in "My notes". */
+export interface Note { id: string; body: string; createdAt: string; updatedAt?: string; }
 interface Data {
   version: 1;
   prayerList: Person[];
   savedPrayers: string[];
   passages: Passage[];
+  notes: Note[];
   rhythm: { date: string; done: string[] };
 }
 
@@ -25,7 +28,7 @@ const KEY = 'mmc:v1';
 export const today = () => new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD, local time
 
 function empty(): Data {
-  return { version: 1, prayerList: [], savedPrayers: [], passages: [], rhythm: { date: today(), done: [] } };
+  return { version: 1, prayerList: [], savedPrayers: [], passages: [], notes: [], rhythm: { date: today(), done: [] } };
 }
 
 function load(): Data {
@@ -54,6 +57,7 @@ function setAll(d: Data) {
   store.prayerList = d.prayerList;
   store.savedPrayers = d.savedPrayers;
   store.passages = d.passages;
+  store.notes = d.notes;
   store.rhythm = d.rhythm;
 }
 
@@ -94,11 +98,12 @@ function remote(write: (db: NonNullable<typeof supabase>, userId: string) => Res
 
 async function loadRemote() {
   if (!supabase || !account.user) return;
-  const [people, prayers, passages, steps] = await Promise.all([
+  const [people, prayers, passages, steps, notes] = await Promise.all([
     supabase.from('prayer_list').select('id, name, intention, prayed_on').order('created_at', { ascending: false }),
     supabase.from('saved_prayers').select('prayer_id').order('created_at'),
     supabase.from('passages').select('id, ref, text, note, saved_at').order('saved_at', { ascending: false }),
     supabase.from('rhythm_steps').select('step').eq('day', today()),
+    supabase.from('journal_notes').select('id, body, created_at, updated_at').order('created_at', { ascending: false }),
   ]);
   const error = people.error ?? prayers.error ?? passages.error ?? steps.error;
   if (error) {
@@ -111,7 +116,10 @@ async function loadRemote() {
     savedPrayers: (prayers.data ?? []).map((r) => r.prayer_id),
     passages: (passages.data ?? []).map((r) => ({ id: r.id, ref: r.ref, text: r.text ?? undefined, note: r.note ?? undefined, savedAt: r.saved_at })),
     rhythm: { date: today(), done: (steps.data ?? []).map((r) => r.step) },
+    // Kept apart from the error check above, so the rest still loads if the notes table is missing.
+    notes: (notes.data ?? []).map((r) => ({ id: r.id, body: r.body, createdAt: r.created_at, updatedAt: r.updated_at ?? undefined })),
   });
+  if (notes.error) account.error = `Couldn't load your notes. ${notes.error.message}`;
 }
 
 /** On sign-in, copies anything saved in this browser into the account, then clears the browser copy. */
@@ -119,7 +127,7 @@ async function uploadLocal(userId: string) {
   if (!supabase) return;
   const local = load();
   const done = local.rhythm.date === today() ? local.rhythm.done : [];
-  if (!local.prayerList.length && !local.savedPrayers.length && !local.passages.length && !done.length) return;
+  if (!local.prayerList.length && !local.savedPrayers.length && !local.passages.length && !local.notes.length && !done.length) return;
   const ok = { error: null };
   const results = await Promise.all([
     local.prayerList.length
@@ -139,6 +147,12 @@ async function uploadLocal(userId: string) {
       : ok,
     done.length
       ? supabase.from('rhythm_steps').upsert(done.map((step) => ({ user_id: userId, day: today(), step })), { onConflict: 'user_id,day,step', ignoreDuplicates: true })
+      : ok,
+    local.notes.length
+      ? supabase.from('journal_notes').upsert(
+          local.notes.map((n) => ({ id: isUuid(n.id) ? n.id : uid(), user_id: userId, body: n.body, created_at: n.createdAt, updated_at: n.updatedAt ?? null })),
+          { onConflict: 'id', ignoreDuplicates: true },
+        )
       : ok,
   ]);
   const error = results.find((r) => r.error)?.error;
@@ -210,8 +224,8 @@ export async function deleteAccount() {
 
 /** Everything saved, as a JSON string for download. */
 export function exportData(): string {
-  const { prayerList, savedPrayers, passages } = store;
-  return JSON.stringify({ exportedAt: new Date().toISOString(), prayerList, savedPrayers, passages }, null, 2);
+  const { prayerList, savedPrayers, passages, notes } = store;
+  return JSON.stringify({ exportedAt: new Date().toISOString(), prayerList, savedPrayers, passages, notes }, null, 2);
 }
 
 // ---------- Prayer list ----------
@@ -263,6 +277,28 @@ export function removePassage(ref: string) {
   store.passages = store.passages.filter((p) => p.ref !== ref);
   persist();
   remote((db) => db.from('passages').delete().eq('ref', ref));
+}
+
+// ---------- My notes ----------
+
+export function addNote(body: string) {
+  const n: Note = { id: uid(), body, createdAt: new Date().toISOString() };
+  store.notes.unshift(n);
+  persist();
+  remote((db, user_id) => db.from('journal_notes').insert({ id: n.id, user_id, body, created_at: n.createdAt }));
+}
+export function updateNote(id: string, body: string) {
+  const n = store.notes.find((x) => x.id === id);
+  if (!n || n.body === body) return;
+  n.body = body;
+  n.updatedAt = new Date().toISOString();
+  persist();
+  remote((db) => db.from('journal_notes').update({ body, updated_at: n.updatedAt }).eq('id', id));
+}
+export function removeNote(id: string) {
+  store.notes = store.notes.filter((n) => n.id !== id);
+  persist();
+  remote((db) => db.from('journal_notes').delete().eq('id', id));
 }
 
 // ---------- Today's rhythm ----------
