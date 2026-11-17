@@ -8,6 +8,11 @@ export const WEBSITES: Website[] = [
     description: 'Apologetics and plain answers to common questions about the Catholic faith.',
   },
   {
+    name: 'Deacon Art Miller',
+    url: 'https://deaconartmiller.com/',
+    description: 'A daily prayer, short reflections on the day\'s readings, prayers for many needs, and parish missions.',
+  },
+  {
     name: 'The Holy See',
     url: 'https://www.vatican.va/content/vatican/en.html',
     description: "The Vatican's official site: papal documents, the Catechism, and Church teaching.",
