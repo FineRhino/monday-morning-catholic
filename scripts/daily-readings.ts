@@ -91,12 +91,26 @@ function parseFeed(xml: string): FeedItem[] {
   }));
 }
 
-/** Finds the item for a date. Links look like .../readings/110826.cfm (some feast days add a suffix). */
+const hasGospel = (item: FeedItem) => parseReadings(item.html).some((r) => /gospel/i.test(r.label) && r.citation);
+
+/**
+ * Finds the item for a date. Links look like .../readings/110826.cfm. When a day has more than one
+ * Mass (Thanksgiving, Christmas, some feasts), the .cfm item is only an index page linking to
+ * .../readings/112626-Ordinary, .../readings/112626-Thanksgiving and so on, which may lack ".cfm".
+ * Then the first Mass the index lists that has a Gospel wins (the weekday Mass comes first).
+ */
 function pickItem(items: FeedItem[], date: string): FeedItem | undefined {
   const [y, m, d] = date.split('-');
   const code = `${m}${d}${y.slice(2)}`;
-  const matches = items.filter((i) => new RegExp(`/readings/${code}([-_][^/]*)?\\.cfm$`, 'i').test(i.link));
-  return matches.find((i) => i.link.toLowerCase().endsWith(`/${code}.cfm`)) ?? matches[0];
+  const matches = items.filter((i) => new RegExp(`/readings/${code}([-_][^/]*)?(\\.cfm)?$`, 'i').test(i.link));
+  const main = matches.find((i) => i.link.toLowerCase().endsWith(`/${code}.cfm`));
+  if (main && hasGospel(main)) return main;
+  const order = (i: FeedItem) => {
+    const at = main ? main.html.indexOf(i.link) : -1;
+    return at < 0 ? Infinity : at;
+  };
+  const withGospel = matches.filter(hasGospel).sort((a, b) => order(a) - order(b));
+  return withGospel[0] ?? main ?? matches[0];
 }
 
 function normalizeLabel(label: string): string {
@@ -184,12 +198,24 @@ async function summarize(title: string, readings: Reading[]): Promise<string> {
 const git = (...a: string[]) => execFileSync('git', a, { cwd: ROOT, encoding: 'utf8', stdio: 'pipe' }).trim();
 
 /** Makes sure the repo is safe for an unattended commit, then brings it up to date. */
-function prepareRepo(): void {
+async function prepareRepo(): Promise<void> {
   const branch = git('rev-parse', '--abbrev-ref', 'HEAD');
   if (branch !== 'main') throw new Error(`Repo is on "${branch}", not main. Not committing.`);
   const dirty = git('status', '--porcelain');
   if (dirty) throw new Error(`Repo has uncommitted changes. Not committing:\n${dirty}`);
-  git('pull', '--ff-only', 'origin', 'main');
+  // Right after the PC wakes, the network may not be up yet, so keep trying for a while.
+  const deadline = Date.now() + GIVE_UP_AFTER_MIN * 60_000;
+  for (;;) {
+    try {
+      git('pull', '--ff-only', 'origin', 'main');
+      return;
+    } catch (err) {
+      const message = (err as Error).message.trim();
+      if (Date.now() >= deadline || !/could not resolve host|unable to access|timed out|connection/i.test(message)) throw err;
+      log(`git pull failed (${message.split('\n').pop()}). Trying again in ${RETRY_EVERY_MIN} minutes.`);
+      await sleep(RETRY_EVERY_MIN * 60_000);
+    }
+  }
 }
 
 function build(): void {
@@ -211,7 +237,7 @@ async function main(): Promise<void> {
   const file = path.join(READINGS_DIR, `${date}.json`);
   log(`Starting readings for ${date}${DRY_RUN ? ' (dry run)' : NO_GIT ? ' (no git)' : ''}`);
 
-  if (!NO_GIT) prepareRepo();
+  if (!NO_GIT) await prepareRepo();
   if (existsSync(file) && !FORCE && !DRY_RUN) {
     log(`${path.relative(ROOT, file)} already exists. Nothing to do.`);
     return;
